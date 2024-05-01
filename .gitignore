@@ -35,3 +35,5 @@ live_slides-*.tar
 npm-debug.log
 /assets/node_modules/
 
+# notes
+notes.txt
