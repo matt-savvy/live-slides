@@ -5,6 +5,7 @@ defmodule LiveSlides.PresentationsTest do
 
   describe "decks" do
     alias LiveSlides.Presentations.Deck
+    alias LiveSlides.Presentations.Deck.Slide
 
     import LiveSlides.PresentationsFixtures
 
@@ -21,10 +22,18 @@ defmodule LiveSlides.PresentationsTest do
     end
 
     test "create_deck/1 with valid data creates a deck" do
-      valid_attrs = %{title: "some title"}
+      valid_attrs = %{
+        title: "some title",
+        slides: [%{body: "this is the first slide"}, %{body: "this is the second slide"}]
+      }
 
       assert {:ok, %Deck{} = deck} = Presentations.create_deck(valid_attrs)
       assert deck.title == "some title"
+
+      assert [
+               %Slide{body: "this is the first slide"},
+               %Slide{body: "this is the second slide"}
+             ] = deck.slides
     end
 
     test "create_deck/1 with invalid data returns error changeset" do

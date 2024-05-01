@@ -17,5 +17,6 @@ defmodule LiveSlides.Presentations.Deck do
     deck
     |> cast(attrs, [:title])
     |> validate_required([:title])
+    |> cast_embed(:slides)
   end
 end
