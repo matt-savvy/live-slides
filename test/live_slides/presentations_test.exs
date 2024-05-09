@@ -2,7 +2,7 @@ defmodule LiveSlides.PresentationsTest do
   use LiveSlides.DataCase
 
   alias LiveSlides.Presentations
-  alias LiveSlides.Presentations.{Deck, Deck.Slide, PresentationServer}
+  alias LiveSlides.Presentations.{Deck, Deck.Slide}
 
   import LiveSlides.PresentationsFixtures
 
@@ -65,10 +65,12 @@ defmodule LiveSlides.PresentationsTest do
   end
 
   describe "presentations" do
-    test "present/1 starts a PresentationServer" do
+    test "present/2 starts a PresentationServer" do
       deck = deck_fixture()
-      {:ok, id} = Presentations.present(deck)
-      assert PresentationServer.exists?(id)
+
+      start_supervised!({DynamicSupervisor, name: TestSupervisor})
+      {:ok, _id} = Presentations.present(deck, TestSupervisor)
+      assert [_presentation_server] = DynamicSupervisor.which_children(TestSupervisor)
     end
 
     test "subscribe/broadcast" do

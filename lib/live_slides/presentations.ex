@@ -6,7 +6,7 @@ defmodule LiveSlides.Presentations do
   import Ecto.Query, warn: false
   alias LiveSlides.Repo
 
-  alias LiveSlides.Presentations.{Deck, PresentationServer}
+  alias LiveSlides.Presentations.{Deck, PresentationServer, PresentationSupervisor}
 
   @doc """
   Returns the list of decks.
@@ -105,10 +105,11 @@ defmodule LiveSlides.Presentations do
   @doc """
   Starts a Presentation for a `Deck`
   """
-  def present(%Deck{} = deck) do
+  def present(%Deck{} = deck, supervisor \\ PresentationSupervisor) do
     id = Ecto.UUID.generate()
+    spec = {PresentationServer, {id, deck}}
 
-    with {:ok, _pid} <- PresentationServer.start_link({id, deck}) do
+    with {:ok, _pid} <- DynamicSupervisor.start_child(supervisor, spec) do
       {:ok, id}
     end
   end

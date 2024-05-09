@@ -12,6 +12,7 @@ defmodule LiveSlides.Application do
       LiveSlides.Repo,
       {DNSCluster, query: Application.get_env(:live_slides, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: LiveSlides.PubSub},
+      {DynamicSupervisor, name: LiveSlides.Presentations.PresentationSupervisor},
       # Start the Finch HTTP client for sending emails
       {Finch, name: LiveSlides.Finch},
       # Start a worker by calling: LiveSlides.Worker.start_link(arg)
