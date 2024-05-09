@@ -4,13 +4,14 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
   import Phoenix.LiveViewTest
   import LiveSlides.PresentationsFixtures
 
+  alias LiveSlides.Presentations
   alias LiveSlides.Presentations.PresentationServer
 
   describe "PresentationLive" do
     setup do
       deck = deck_fixture()
-      id = Ecto.UUID.generate()
-      start_supervised({PresentationServer, {id, deck}}, id: id)
+      start_supervised!({DynamicSupervisor, name: TestSupervisor})
+      {:ok, id} = Presentations.present(deck, TestSupervisor)
 
       %{deck: deck, id: id}
     end
