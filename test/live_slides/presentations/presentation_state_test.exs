@@ -40,15 +40,16 @@ defmodule LiveSlides.Presentations.PresentationStateTest do
   end
 
   describe "next_slide/1" do
-    test "moves the head", %{deck: deck} do
+    test "pops head and pushes onto prev_slides", %{deck: deck} do
       state = %PresentationState{
         slides: deck.slides
       }
 
-      updated_slides = Enum.drop(deck.slides, 1)
+      [first_slide | updated_slides] = deck.slides
 
       assert %PresentationState{
-               slides: ^updated_slides
+               slides: ^updated_slides,
+               prev_slides: [^first_slide]
              } = PresentationState.next_slide(state)
     end
 
@@ -58,6 +59,30 @@ defmodule LiveSlides.Presentations.PresentationStateTest do
       }
 
       assert ^state = PresentationState.next_slide(state)
+    end
+  end
+
+  describe "prev_slide/1" do
+    test "restores the head", %{deck: deck} do
+      [first | rest] = slides = deck.slides
+
+      state = %PresentationState{
+        slides: rest,
+        prev_slides: [first]
+      }
+
+      assert %PresentationState{
+               slides: ^slides,
+               prev_slides: []
+             } = PresentationState.prev_slide(state)
+    end
+
+    test "is no-op when no previous slides" do
+      state = %PresentationState{
+        prev_slides: []
+      }
+
+      assert ^state = PresentationState.prev_slide(state)
     end
   end
 end
