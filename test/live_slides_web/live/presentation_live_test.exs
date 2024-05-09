@@ -54,5 +54,16 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
 
       assert render(live_view) =~ first_slide.body
     end
+
+    test "change-slide buttons update PresentationServer state", %{conn: conn, deck: deck, id: id} do
+      [first_slide, second_slide | _rest] = deck.slides
+      {:ok, live_view, _html} = live(conn, ~p"/presentations/#{id}")
+      assert first_slide == PresentationServer.get_slide(id)
+      assert live_view |> element("button", "Next Slide") |> render_click()
+
+      assert second_slide == PresentationServer.get_slide(id)
+      assert live_view |> element("button", "Previous Slide") |> render_click()
+      assert first_slide == PresentationServer.get_slide(id)
+    end
   end
 end

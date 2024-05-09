@@ -18,7 +18,19 @@ defmodule LiveSlidesWeb.PresentationLive do
     :ok = Presentations.subscribe(id)
 
     %{body: body} = PresentationServer.get_slide(id)
-    {:noreply, socket |> assign(:page_title, title) |> assign(:body, body)}
+    {:noreply, socket |> assign(:page_title, title) |> assign(:id, id) |> assign(:body, body)}
+  end
+
+  @impl true
+  def handle_event("change-slide", %{"direction" => direction}, socket) do
+    action =
+      case direction do
+        "next" -> :next_slide
+        "prev" -> :prev_slide
+      end
+
+    apply(PresentationServer, action, [socket.assigns.id])
+    {:noreply, socket}
   end
 
   @impl true

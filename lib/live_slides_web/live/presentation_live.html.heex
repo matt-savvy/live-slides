@@ -1,3 +1,13 @@
 <div>
+  <.button phx-click="change-slide" phx-value-direction="prev" type="button">
+    Previous Slide
+  </.button>
+
+  <.button phx-click="change-slide" phx-value-direction="next" type="button">
+    Next Slide
+  </.button>
+</div>
+
+<div>
   <%= @body %>
 </div>
