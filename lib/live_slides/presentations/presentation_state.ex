@@ -3,15 +3,19 @@ defmodule LiveSlides.Presentations.PresentationState do
   Functional core and transformation functions for PresentationServer.
   """
 
-  defstruct title: "", slides: []
+  defstruct [
+    :id,
+    title: "",
+    slides: []
+  ]
 
   alias LiveSlides.Presentations.Deck
 
   @doc """
   Creates new PresentationState
   """
-  def new(%Deck{title: title, slides: slides}) do
-    %__MODULE__{title: title, slides: slides}
+  def new(id, %Deck{title: title, slides: slides}) do
+    %__MODULE__{id: id, title: title, slides: slides}
   end
 
   @doc """

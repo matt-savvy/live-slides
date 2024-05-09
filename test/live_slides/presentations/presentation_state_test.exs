@@ -12,8 +12,11 @@ defmodule LiveSlides.Presentations.PresentationStateTest do
 
   describe "new/1" do
     test "creates new PresentationState", %{deck: deck} do
+      id = Ecto.UUID.generate()
       %{title: title, slides: slides} = deck
-      assert %PresentationState{title: ^title, slides: ^slides} = PresentationState.new(deck)
+
+      assert %PresentationState{id: ^id, title: ^title, slides: ^slides} =
+               PresentationState.new(id, deck)
     end
   end
 

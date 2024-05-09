@@ -11,7 +11,7 @@ defmodule LiveSlides.Presentations.PresentationServer do
   Starts a PresentationServer process linked to the current process.
   """
   def start_link({id, %Deck{} = deck}) do
-    GenServer.start_link(__MODULE__, deck, name: name(id))
+    GenServer.start_link(__MODULE__, [id, deck], name: name(id))
   end
 
   @doc """
@@ -64,8 +64,8 @@ defmodule LiveSlides.Presentations.PresentationServer do
   end
 
   @impl true
-  def init(deck) do
-    {:ok, PresentationState.new(deck)}
+  def init([id, deck]) do
+    {:ok, PresentationState.new(id, deck)}
   end
 
   @impl true
