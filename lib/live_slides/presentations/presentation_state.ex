@@ -10,12 +10,22 @@ defmodule LiveSlides.Presentations.PresentationState do
   @doc """
   Creates new PresentationState
   """
-  def new(%Deck{title: title}) do
-    %__MODULE__{title: title}
+  def new(%Deck{title: title, slides: slides}) do
+    %__MODULE__{title: title, slides: slides}
   end
 
   @doc """
   Returns the title.
   """
   def title(%__MODULE__{title: title}), do: title
+
+  @doc """
+  Returns the current slide, if possible.
+  """
+  def get_slide(%__MODULE__{slides: slides}) do
+    case slides do
+      [slide | _rest] -> slide
+      _ -> nil
+    end
+  end
 end
