@@ -101,4 +101,20 @@ defmodule LiveSlides.Presentations do
   def change_deck(%Deck{} = deck, attrs \\ %{}) do
     Deck.changeset(deck, attrs)
   end
+
+  @doc """
+  Subscribes to a presentation.
+  """
+  def subscribe(id) do
+    Phoenix.PubSub.subscribe(LiveSlides.PubSub, topic(id))
+  end
+
+  @doc """
+  Broadcasts to a topic for presentation.
+  """
+  def broadcast!(id, msg) do
+    Phoenix.PubSub.broadcast(LiveSlides.PubSub, topic(id), msg)
+  end
+
+  defp topic(id), do: "presentation-#{id}"
 end

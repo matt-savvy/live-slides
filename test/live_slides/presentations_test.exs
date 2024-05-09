@@ -65,4 +65,14 @@ defmodule LiveSlides.PresentationsTest do
       assert %Ecto.Changeset{} = Presentations.change_deck(deck)
     end
   end
+
+  describe "presentations" do
+    test "subscribe/broadcast" do
+      id = Ecto.UUID.generate()
+      assert :ok = Presentations.subscribe(id)
+      ref = make_ref()
+      Presentations.broadcast!(id, ref)
+      assert_receive ^ref
+    end
+  end
 end
