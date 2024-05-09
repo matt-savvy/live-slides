@@ -68,6 +68,13 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
       assert render(live_view) =~ first_slide.body
     end
 
+    test "change-slide buttons not rendered for :view", %{conn: conn, id: id} do
+      {:ok, live_view, _html} = live(conn, ~p"/presentations/#{id}")
+
+      refute live_view |> has_element?(@next_button_selector)
+      refute live_view |> has_element?(@prev_button_selector)
+    end
+
     test "change-slide buttons update PresentationServer state", %{conn: conn, deck: deck, id: id} do
       user = user_fixture()
       conn = log_in_user(conn, user)
