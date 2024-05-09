@@ -7,7 +7,7 @@ defmodule LiveSlides.Presentations.PresentationServerTest do
 
   test "integration test" do
     deck = deck_fixture()
-    [first_slide | _rest] = deck.slides
+    [first_slide, second_slide | _rest] = deck.slides
     id = Ecto.UUID.generate()
 
     other_deck = deck_fixture()
@@ -20,5 +20,7 @@ defmodule LiveSlides.Presentations.PresentationServerTest do
 
     assert deck.title == PresentationServer.title(id)
     assert first_slide == PresentationServer.get_slide(id)
+    PresentationServer.next_slide(id)
+    assert second_slide == PresentationServer.get_slide(id)
   end
 end

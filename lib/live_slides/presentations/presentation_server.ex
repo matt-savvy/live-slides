@@ -45,6 +45,15 @@ defmodule LiveSlides.Presentations.PresentationServer do
   end
 
   @doc """
+  Advances the current slide if possible.
+  """
+  def next_slide(id) do
+    id
+    |> name()
+    |> GenServer.cast(:next_slide)
+  end
+
+  @doc """
   Returns true if a PresentationServer process exists for this id.
   """
   def exists?(id) do
@@ -67,5 +76,10 @@ defmodule LiveSlides.Presentations.PresentationServer do
   @impl true
   def handle_call(:get_slide, _from, state) do
     {:reply, PresentationState.get_slide(state), state}
+  end
+
+  @impl true
+  def handle_cast(:next_slide, state) do
+    {:noreply, PresentationState.next_slide(state)}
   end
 end
