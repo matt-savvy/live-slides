@@ -30,5 +30,21 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
         live(conn, ~p"/presentations/#{id}")
       end
     end
+
+    test "subscribes to presentation", %{conn: conn, deck: deck, id: id} do
+      [_first_slide, second_slide | _rest] = deck.slides
+      {:ok, live_view, _html} = live(conn, ~p"/presentations/#{id}")
+
+      PresentationServer.next_slide(id)
+
+      # force test process to wait until the server and live view
+      # processes have handled these messages.
+      # we can safely assume the live view has received our
+      # pubsub message
+      _ = PresentationServer.get_slide(id)
+      _ = :sys.get_state(live_view.pid)
+
+      assert render(live_view) =~ second_slide.body
+    end
   end
 end
