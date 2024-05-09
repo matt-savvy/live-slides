@@ -5,6 +5,7 @@ defmodule LiveSlides.Presentations.PresentationServer do
 
   use GenServer
 
+  alias LiveSlides.Presentations
   alias LiveSlides.Presentations.{Deck, PresentationState}
 
   @doc """
@@ -80,6 +81,11 @@ defmodule LiveSlides.Presentations.PresentationServer do
 
   @impl true
   def handle_cast(:next_slide, state) do
-    {:noreply, PresentationState.next_slide(state)}
+    next_state = PresentationState.next_slide(state)
+
+    slide = PresentationState.get_slide(next_state)
+    Presentations.broadcast!(next_state.id, {:slide_changed, slide})
+
+    {:noreply, next_state}
   end
 end
