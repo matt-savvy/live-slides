@@ -20,5 +20,13 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
 
       assert page_title(live_view) =~ deck.title
     end
+
+    test "handles when presentation is not found", %{conn: conn} do
+      id = Ecto.UUID.generate()
+
+      assert_raise LiveSlidesWeb.PresentationLive.NotFound, fn ->
+        live(conn, ~p"/presentations/#{id}")
+      end
+    end
   end
 end
