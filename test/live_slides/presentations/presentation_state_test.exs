@@ -16,4 +16,11 @@ defmodule LiveSlides.Presentations.PresentationStateTest do
       assert %PresentationState{title: ^title} = PresentationState.new(deck)
     end
   end
+
+  describe "title/1" do
+    test "returns the title" do
+      title = "Some Presentation"
+      assert title == PresentationState.title(%PresentationState{title: title})
+    end
+  end
 end

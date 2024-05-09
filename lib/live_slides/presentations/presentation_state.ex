@@ -13,4 +13,9 @@ defmodule LiveSlides.Presentations.PresentationState do
   def new(%Deck{title: title}) do
     %__MODULE__{title: title}
   end
+
+  @doc """
+  Returns the title.
+  """
+  def title(%__MODULE__{title: title}), do: title
 end
