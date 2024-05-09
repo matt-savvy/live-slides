@@ -16,5 +16,7 @@ defmodule LiveSlides.Presentations.PresentationServerTest do
     start_supervised!({PresentationServer, {id, deck}}, id: id)
     assert PresentationServer.exists?(id)
     start_supervised!({PresentationServer, {other_id, other_deck}}, id: other_id)
+
+    assert deck.title == PresentationServer.title(id)
   end
 end

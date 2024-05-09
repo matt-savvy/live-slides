@@ -27,6 +27,15 @@ defmodule LiveSlides.Presentations.PresentationServer do
   end
 
   @doc """
+  Returns the title.
+  """
+  def title(id) do
+    id
+    |> name()
+    |> GenServer.call(:title)
+  end
+
+  @doc """
   Returns true if a PresentationServer process exists for this id.
   """
   def exists?(id) do
@@ -39,5 +48,10 @@ defmodule LiveSlides.Presentations.PresentationServer do
   @impl true
   def init(deck) do
     {:ok, PresentationState.new(deck)}
+  end
+
+  @impl true
+  def handle_call(:title, _from, state) do
+    {:reply, PresentationState.title(state), state}
   end
 end
