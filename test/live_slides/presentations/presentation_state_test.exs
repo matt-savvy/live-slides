@@ -35,4 +35,26 @@ defmodule LiveSlides.Presentations.PresentationStateTest do
       assert first_slide == PresentationState.get_slide(state)
     end
   end
+
+  describe "next_slide/1" do
+    test "moves the head", %{deck: deck} do
+      state = %PresentationState{
+        slides: deck.slides
+      }
+
+      updated_slides = Enum.drop(deck.slides, 1)
+
+      assert %PresentationState{
+               slides: ^updated_slides
+             } = PresentationState.next_slide(state)
+    end
+
+    test "is no-op when no remaining slides" do
+      state = %PresentationState{
+        slides: []
+      }
+
+      assert ^state = PresentationState.next_slide(state)
+    end
+  end
 end

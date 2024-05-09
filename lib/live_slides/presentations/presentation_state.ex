@@ -28,4 +28,14 @@ defmodule LiveSlides.Presentations.PresentationState do
       _ -> nil
     end
   end
+
+  @doc """
+  Advances the current slide.
+  """
+  def next_slide(%__MODULE__{slides: slides} = state) do
+    case slides do
+      [_head | rest] -> %{state | slides: rest}
+      [] -> state
+    end
+  end
 end
