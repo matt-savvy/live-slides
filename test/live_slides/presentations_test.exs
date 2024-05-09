@@ -2,13 +2,11 @@ defmodule LiveSlides.PresentationsTest do
   use LiveSlides.DataCase
 
   alias LiveSlides.Presentations
+  alias LiveSlides.Presentations.{Deck, Deck.Slide, PresentationServer}
+
+  import LiveSlides.PresentationsFixtures
 
   describe "decks" do
-    alias LiveSlides.Presentations.Deck
-    alias LiveSlides.Presentations.Deck.Slide
-
-    import LiveSlides.PresentationsFixtures
-
     @invalid_attrs %{title: nil}
 
     test "list_decks/0 returns all decks" do
@@ -67,6 +65,12 @@ defmodule LiveSlides.PresentationsTest do
   end
 
   describe "presentations" do
+    test "present/1 starts a PresentationServer" do
+      deck = deck_fixture()
+      {:ok, id} = Presentations.present(deck)
+      assert PresentationServer.exists?(id)
+    end
+
     test "subscribe/broadcast" do
       id = Ecto.UUID.generate()
       assert :ok = Presentations.subscribe(id)

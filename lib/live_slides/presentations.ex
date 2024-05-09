@@ -6,7 +6,7 @@ defmodule LiveSlides.Presentations do
   import Ecto.Query, warn: false
   alias LiveSlides.Repo
 
-  alias LiveSlides.Presentations.Deck
+  alias LiveSlides.Presentations.{Deck, PresentationServer}
 
   @doc """
   Returns the list of decks.
@@ -100,6 +100,17 @@ defmodule LiveSlides.Presentations do
   """
   def change_deck(%Deck{} = deck, attrs \\ %{}) do
     Deck.changeset(deck, attrs)
+  end
+
+  @doc """
+  Starts a Presentation for a `Deck`
+  """
+  def present(%Deck{} = deck) do
+    id = Ecto.UUID.generate()
+
+    with {:ok, _pid} <- PresentationServer.start_link({id, deck}) do
+      {:ok, id}
+    end
   end
 
   @doc """
