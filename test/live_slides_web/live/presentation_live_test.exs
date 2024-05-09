@@ -32,7 +32,7 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
     end
 
     test "subscribes to presentation", %{conn: conn, deck: deck, id: id} do
-      [_first_slide, second_slide | _rest] = deck.slides
+      [first_slide, second_slide | _rest] = deck.slides
       {:ok, live_view, _html} = live(conn, ~p"/presentations/#{id}")
 
       PresentationServer.next_slide(id)
@@ -45,6 +45,14 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
       _ = :sys.get_state(live_view.pid)
 
       assert render(live_view) =~ second_slide.body
+
+      PresentationServer.prev_slide(id)
+
+      # same as above
+      _ = PresentationServer.get_slide(id)
+      _ = :sys.get_state(live_view.pid)
+
+      assert render(live_view) =~ first_slide.body
     end
   end
 end
