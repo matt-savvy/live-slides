@@ -8,7 +8,7 @@ defmodule LiveSlides.Presentations.PresentationServerTest do
 
   test "integration test" do
     deck = deck_fixture()
-    [first_slide, second_slide | _rest] = deck.slides
+    [first_slide, second_slide, third_slide] = deck.slides
     id = Ecto.UUID.generate()
 
     other_deck = deck_fixture()
@@ -26,5 +26,28 @@ defmodule LiveSlides.Presentations.PresentationServerTest do
     assert second_slide == PresentationServer.get_slide(id)
 
     assert_receive {:slide_changed, ^second_slide}
+
+    PresentationServer.next_slide(id)
+    assert third_slide == PresentationServer.get_slide(id)
+
+    PresentationServer.next_slide(id)
+    assert nil == PresentationServer.get_slide(id)
+
+    # no op
+    PresentationServer.next_slide(id)
+    assert nil == PresentationServer.get_slide(id)
+
+    PresentationServer.prev_slide(id)
+    assert third_slide == PresentationServer.get_slide(id)
+
+    PresentationServer.prev_slide(id)
+    assert second_slide == PresentationServer.get_slide(id)
+
+    PresentationServer.prev_slide(id)
+    assert first_slide == PresentationServer.get_slide(id)
+
+    # no op
+    PresentationServer.prev_slide(id)
+    assert first_slide == PresentationServer.get_slide(id)
   end
 end

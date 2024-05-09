@@ -55,6 +55,15 @@ defmodule LiveSlides.Presentations.PresentationServer do
   end
 
   @doc """
+  Rewinds the current slide if possible.
+  """
+  def prev_slide(id) do
+    id
+    |> name()
+    |> GenServer.cast(:prev_slide)
+  end
+
+  @doc """
   Returns true if a PresentationServer process exists for this id.
   """
   def exists?(id) do
@@ -80,8 +89,8 @@ defmodule LiveSlides.Presentations.PresentationServer do
   end
 
   @impl true
-  def handle_cast(:next_slide, state) do
-    next_state = PresentationState.next_slide(state)
+  def handle_cast(action, state) when action in [:next_slide, :prev_slide] do
+    next_state = apply(PresentationState, action, [state])
 
     slide = PresentationState.get_slide(next_state)
     Presentations.broadcast!(next_state.id, {:slide_changed, slide})
