@@ -16,9 +16,11 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
     end
 
     test "gets state from genserver", %{conn: conn, deck: deck, id: id} do
-      {:ok, live_view, _html} = live(conn, ~p"/presentations/#{id}")
+      [first_slide | _rest] = deck.slides
+      {:ok, live_view, html} = live(conn, ~p"/presentations/#{id}")
 
       assert page_title(live_view) =~ deck.title
+      assert html =~ first_slide.body
     end
 
     test "handles when presentation is not found", %{conn: conn} do

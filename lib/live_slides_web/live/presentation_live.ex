@@ -14,6 +14,7 @@ defmodule LiveSlidesWeb.PresentationLive do
   @impl true
   def handle_params(%{"id" => id}, _uri, socket) do
     title = PresentationServer.title(id)
-    {:noreply, socket |> assign(:page_title, title)}
+    %{body: body} = PresentationServer.get_slide(id)
+    {:noreply, socket |> assign(:page_title, title) |> assign(:body, body)}
   end
 end
