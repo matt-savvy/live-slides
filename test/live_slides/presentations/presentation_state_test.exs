@@ -53,9 +53,11 @@ defmodule LiveSlides.Presentations.PresentationStateTest do
              } = PresentationState.next_slide(state)
     end
 
-    test "is no-op when no remaining slides" do
+    test "is no-op when no remaining slides", %{deck: deck} do
+      slides = Enum.take(deck.slides, 1)
+
       state = %PresentationState{
-        slides: []
+        slides: slides
       }
 
       assert ^state = PresentationState.next_slide(state)

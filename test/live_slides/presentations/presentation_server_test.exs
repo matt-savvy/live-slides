@@ -30,14 +30,8 @@ defmodule LiveSlides.Presentations.PresentationServerTest do
     PresentationServer.next_slide(id)
     assert third_slide == PresentationServer.get_slide(id)
 
-    PresentationServer.next_slide(id)
-    assert nil == PresentationServer.get_slide(id)
-
     # no op
     PresentationServer.next_slide(id)
-    assert nil == PresentationServer.get_slide(id)
-
-    PresentationServer.prev_slide(id)
     assert third_slide == PresentationServer.get_slide(id)
 
     PresentationServer.prev_slide(id)

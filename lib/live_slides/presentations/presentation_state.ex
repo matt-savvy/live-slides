@@ -39,6 +39,7 @@ defmodule LiveSlides.Presentations.PresentationState do
   """
   def next_slide(%__MODULE__{slides: slides, prev_slides: prev_slides} = state) do
     case slides do
+      [_head] -> state
       [head | rest] -> %{state | slides: rest, prev_slides: [head | prev_slides]}
       [] -> state
     end
