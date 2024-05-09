@@ -7,6 +7,7 @@ defmodule LiveSlides.Presentations.PresentationServerTest do
 
   test "integration test" do
     deck = deck_fixture()
+    [first_slide | _rest] = deck.slides
     id = Ecto.UUID.generate()
 
     other_deck = deck_fixture()
@@ -18,5 +19,6 @@ defmodule LiveSlides.Presentations.PresentationServerTest do
     start_supervised!({PresentationServer, {other_id, other_deck}}, id: other_id)
 
     assert deck.title == PresentationServer.title(id)
+    assert first_slide == PresentationServer.get_slide(id)
   end
 end

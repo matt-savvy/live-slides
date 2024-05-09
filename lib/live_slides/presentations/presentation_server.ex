@@ -36,6 +36,15 @@ defmodule LiveSlides.Presentations.PresentationServer do
   end
 
   @doc """
+  Returns the current slide, if applicable.
+  """
+  def get_slide(id) do
+    id
+    |> name()
+    |> GenServer.call(:get_slide)
+  end
+
+  @doc """
   Returns true if a PresentationServer process exists for this id.
   """
   def exists?(id) do
@@ -53,5 +62,10 @@ defmodule LiveSlides.Presentations.PresentationServer do
   @impl true
   def handle_call(:title, _from, state) do
     {:reply, PresentationState.title(state), state}
+  end
+
+  @impl true
+  def handle_call(:get_slide, _from, state) do
+    {:reply, PresentationState.get_slide(state), state}
   end
 end
