@@ -9,6 +9,9 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
   alias LiveSlides.Presentations.PresentationServer
 
   describe "PresentationLive" do
+    @next_button_selector ~s{[data-id="change-slide-next"]}
+    @prev_button_selector ~s{[data-id="change-slide-prev"]}
+
     setup do
       deck = deck_fixture()
       start_supervised!({DynamicSupervisor, name: TestSupervisor})
@@ -71,11 +74,15 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
 
       [first_slide, second_slide | _rest] = deck.slides
       {:ok, live_view, _html} = live(conn, ~p"/present/#{id}")
+
+      assert live_view |> has_element?(@next_button_selector)
+      assert live_view |> has_element?(@prev_button_selector)
+
       assert first_slide == PresentationServer.get_slide(id)
-      assert live_view |> element("button", "Next Slide") |> render_click()
+      assert live_view |> element(@next_button_selector) |> render_click()
 
       assert second_slide == PresentationServer.get_slide(id)
-      assert live_view |> element("button", "Previous Slide") |> render_click()
+      assert live_view |> element(@prev_button_selector) |> render_click()
       assert first_slide == PresentationServer.get_slide(id)
     end
   end
