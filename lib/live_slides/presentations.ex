@@ -115,6 +115,16 @@ defmodule LiveSlides.Presentations do
   end
 
   @doc """
+  Finishes a Presentation.
+  """
+  def finish(id, supervisor \\ PresentationSupervisor) do
+    with {:ok, pid} <- PresentationServer.whereis(id),
+         :ok <- DynamicSupervisor.terminate_child(supervisor, pid) do
+      :ok
+    end
+  end
+
+  @doc """
   Subscribes to a presentation.
   """
   def subscribe(id) do
