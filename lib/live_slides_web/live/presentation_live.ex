@@ -38,4 +38,9 @@ defmodule LiveSlidesWeb.PresentationLive do
     %{body: body} = slide
     {:noreply, socket |> assign(:body, body)}
   end
+
+  @impl true
+  def handle_info(:finished, socket) do
+    {:noreply, socket |> put_flash(:info, "The presentation has ended.")}
+  end
 end

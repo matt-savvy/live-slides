@@ -92,5 +92,13 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
       assert live_view |> element(@prev_button_selector) |> render_click()
       assert first_slide == PresentationServer.get_slide(id)
     end
+
+    test "handles :finished", %{conn: conn, id: id} do
+      {:ok, live_view, _html} = live(conn, ~p"/presentations/#{id}")
+
+      send(live_view.pid, :finished)
+
+      assert render(live_view) =~ "The presentation has ended."
+    end
   end
 end
