@@ -28,6 +28,19 @@ defmodule LiveSlides.Presentations.PresentationServer do
   end
 
   @doc """
+  Looks up the pid for an id.
+  """
+  def whereis(id) do
+    id
+    |> global_id()
+    |> :global.whereis_name()
+    |> case do
+      :undefined -> {:error, :not_found}
+      pid when is_pid(pid) -> {:ok, pid}
+    end
+  end
+
+  @doc """
   Returns the title.
   """
   def title(id) do

@@ -15,10 +15,14 @@ defmodule LiveSlides.Presentations.PresentationServerTest do
     other_id = Ecto.UUID.generate()
 
     refute PresentationServer.exists?(id)
-    start_supervised!({PresentationServer, {id, deck}}, id: id)
+    assert {:error, :not_found} == PresentationServer.whereis(Ecto.UUID.generate())
+
+    pid = start_supervised!({PresentationServer, {id, deck}}, id: id)
     assert PresentationServer.exists?(id)
     start_supervised!({PresentationServer, {other_id, other_deck}}, id: other_id)
     assert :ok = Presentations.subscribe(id)
+
+    assert {:ok, ^pid} = PresentationServer.whereis(id)
 
     assert deck.title == PresentationServer.title(id)
     assert first_slide == PresentationServer.get_slide(id)
