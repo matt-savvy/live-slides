@@ -64,7 +64,11 @@ defmodule LiveSlidesWeb.Router do
   scope "/", LiveSlidesWeb do
     pipe_through [:browser, :require_authenticated_user]
 
-    live "/present/:id", PresentationLive, :present
+    live_session :require_authenticated_user,
+      on_mount: [{LiveSlidesWeb.UserAuth, :ensure_authenticated}] do
+      live "/present/:id", PresentationLive, :present
+    end
+
     get "/users/settings", UserSettingsController, :edit
     put "/users/settings", UserSettingsController, :update
     get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
