@@ -105,11 +105,11 @@ defmodule LiveSlides.Presentations do
   @doc """
   Starts a Presentation for a `Deck`
   """
-  def present(%Deck{} = deck, supervisor \\ PresentationSupervisor) do
+  def present(%Deck{} = deck) do
     id = Ecto.UUID.generate()
     spec = {PresentationServer, {id, deck}}
 
-    with {:ok, _pid} <- DynamicSupervisor.start_child(supervisor, spec) do
+    with {:ok, _pid} <- DynamicSupervisor.start_child(supervisor(), spec) do
       {:ok, id}
     end
   end
@@ -117,11 +117,15 @@ defmodule LiveSlides.Presentations do
   @doc """
   Finishes a Presentation.
   """
-  def finish(id, supervisor \\ PresentationSupervisor) do
+  def finish(id) do
     with {:ok, pid} <- PresentationServer.whereis(id),
-         :ok <- DynamicSupervisor.terminate_child(supervisor, pid) do
+         :ok <- DynamicSupervisor.terminate_child(supervisor(), pid) do
       :ok
     end
+  end
+
+  defp supervisor do
+    Application.get_env(:live_slides, :supervisor, PresentationSupervisor)
   end
 
   @doc """

@@ -1,5 +1,5 @@
 defmodule LiveSlidesWeb.PresentationLiveTest do
-  use LiveSlidesWeb.ConnCase
+  use LiveSlidesWeb.ConnCase, async: false
 
   import Phoenix.LiveViewTest
   import LiveSlides.AccountsFixtures
@@ -13,9 +13,16 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
     @prev_button_selector ~s{[data-id="change-slide-prev"]}
 
     setup do
-      deck = deck_fixture()
       start_supervised!({DynamicSupervisor, name: TestSupervisor})
-      {:ok, id} = Presentations.present(deck, TestSupervisor)
+
+      Application.put_env(:live_slides, :supervisor, TestSupervisor)
+
+      on_exit(fn ->
+        Application.delete_env(:live_slides, :supervisor)
+      end)
+
+      deck = deck_fixture()
+      {:ok, id} = Presentations.present(deck)
 
       %{deck: deck, id: id}
     end

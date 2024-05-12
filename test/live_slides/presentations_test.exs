@@ -1,5 +1,5 @@
 defmodule LiveSlides.PresentationsTest do
-  use LiveSlides.DataCase
+  use LiveSlides.DataCase, async: false
 
   alias LiveSlides.Presentations
   alias LiveSlides.Presentations.{Deck, Deck.Slide, PresentationServer}
@@ -65,27 +65,34 @@ defmodule LiveSlides.PresentationsTest do
   end
 
   describe "presentations" do
+    setup do
+      start_supervised!({DynamicSupervisor, name: TestSupervisor})
+
+      Application.put_env(:live_slides, :supervisor, TestSupervisor)
+
+      on_exit(fn ->
+        Application.delete_env(:live_slides, :supervisor)
+      end)
+    end
+
     test "present/2 starts a PresentationServer" do
       deck = deck_fixture()
 
-      start_supervised!({DynamicSupervisor, name: TestSupervisor})
-      {:ok, _id} = Presentations.present(deck, TestSupervisor)
+      {:ok, _id} = Presentations.present(deck)
       assert [_presentation_server] = DynamicSupervisor.which_children(TestSupervisor)
     end
 
     test "finish/2 stops a PresentationServer" do
       deck = deck_fixture()
 
-      start_supervised!({DynamicSupervisor, name: TestSupervisor})
-      {:ok, id} = Presentations.present(deck, TestSupervisor)
+      {:ok, id} = Presentations.present(deck)
 
-      :ok = Presentations.finish(id, TestSupervisor)
+      :ok = Presentations.finish(id)
 
       refute PresentationServer.exists?(id)
     end
 
     test "finish/2 handles not found" do
-      start_supervised!({DynamicSupervisor, name: TestSupervisor})
       assert {:error, :not_found} = Presentations.finish(Ecto.UUID.generate())
     end
 
