@@ -3,10 +3,12 @@ defmodule LiveSlides.Presentations.PresentationServer do
   Client/Server module to centralize state of a presentation.
   """
 
-  use GenServer
+  use GenServer, restart: :transient
 
   alias LiveSlides.Presentations
   alias LiveSlides.Presentations.{Deck, PresentationState}
+
+  @timeout 60 * 60 * 1000
 
   @doc """
   Starts a PresentationServer process linked to the current process.
@@ -88,17 +90,17 @@ defmodule LiveSlides.Presentations.PresentationServer do
 
   @impl true
   def init([id, deck]) do
-    {:ok, PresentationState.new(id, deck)}
+    {:ok, PresentationState.new(id, deck), timeout()}
   end
 
   @impl true
   def handle_call(:title, _from, state) do
-    {:reply, PresentationState.title(state), state}
+    {:reply, PresentationState.title(state), state, timeout()}
   end
 
   @impl true
   def handle_call(:get_slide, _from, state) do
-    {:reply, PresentationState.get_slide(state), state}
+    {:reply, PresentationState.get_slide(state), state, timeout()}
   end
 
   @impl true
@@ -108,6 +110,16 @@ defmodule LiveSlides.Presentations.PresentationServer do
     slide = PresentationState.get_slide(next_state)
     Presentations.broadcast!(next_state.id, {:slide_changed, slide})
 
-    {:noreply, next_state}
+    {:noreply, next_state, timeout()}
+  end
+
+  @impl true
+  def handle_info(:timeout, state) do
+    Presentations.broadcast!(state.id, :finished)
+    {:stop, {:shutdown, :timeout}, state}
+  end
+
+  defp timeout do
+    Application.get_env(:live_slides, :timeout, @timeout)
   end
 end

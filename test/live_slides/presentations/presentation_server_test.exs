@@ -48,4 +48,24 @@ defmodule LiveSlides.Presentations.PresentationServerTest do
     PresentationServer.prev_slide(id)
     assert first_slide == PresentationServer.get_slide(id)
   end
+
+  test "stops after timeout and broadcasts" do
+    timeout = 50
+    Application.put_env(:live_slides, :timeout, timeout)
+    id = Ecto.UUID.generate()
+    deck = deck_fixture()
+    Presentations.subscribe(id)
+    pid = start_supervised!({PresentationServer, {id, deck}}, id: id)
+
+    Process.sleep(timeout + 10)
+
+    refute Process.alive?(pid)
+
+    assert_received :finished
+    refute PresentationServer.exists?(id)
+
+    on_exit(fn ->
+      Application.delete_env(:live_slides, :timeout)
+    end)
+  end
 end
