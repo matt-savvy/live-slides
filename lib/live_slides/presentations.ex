@@ -120,7 +120,7 @@ defmodule LiveSlides.Presentations do
   def finish(id) do
     with {:ok, pid} <- PresentationServer.whereis(id),
          :ok <- DynamicSupervisor.terminate_child(supervisor(), pid) do
-      :ok
+      broadcast!(id, :finished)
     end
   end
 

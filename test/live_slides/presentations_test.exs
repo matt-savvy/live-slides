@@ -82,14 +82,17 @@ defmodule LiveSlides.PresentationsTest do
       assert [_presentation_server] = DynamicSupervisor.which_children(TestSupervisor)
     end
 
-    test "finish/2 stops a PresentationServer" do
+    test "finish/2 stops a PresentationServer and broadcasts" do
       deck = deck_fixture()
 
       {:ok, id} = Presentations.present(deck)
+      assert :ok = Presentations.subscribe(id)
 
       :ok = Presentations.finish(id)
 
       refute PresentationServer.exists?(id)
+
+      assert_receive :finished
     end
 
     test "finish/2 handles not found" do
