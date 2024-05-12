@@ -34,6 +34,13 @@ defmodule LiveSlidesWeb.PresentationLive do
   end
 
   @impl true
+  def handle_event("finish", _params, socket) do
+    Presentations.finish(socket.assigns.id)
+
+    {:noreply, socket}
+  end
+
+  @impl true
   def handle_info({:slide_changed, slide}, socket) do
     %{body: body} = slide
     {:noreply, socket |> assign(:body, body)}

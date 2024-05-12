@@ -11,6 +11,7 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
   describe "PresentationLive" do
     @next_button_selector ~s{[data-id="change-slide-next"]}
     @prev_button_selector ~s{[data-id="change-slide-prev"]}
+    @finish_button_selector ~s{[data-id="finish-presentation"]}
 
     setup do
       start_supervised!({DynamicSupervisor, name: TestSupervisor})
@@ -75,11 +76,12 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
       assert render(live_view) =~ first_slide.body
     end
 
-    test "change-slide buttons not rendered for :view", %{conn: conn, id: id} do
+    test "buttons not rendered for :view", %{conn: conn, id: id} do
       {:ok, live_view, _html} = live(conn, ~p"/presentations/#{id}")
 
       refute live_view |> has_element?(@next_button_selector)
       refute live_view |> has_element?(@prev_button_selector)
+      refute live_view |> has_element?(@finish_button_selector)
     end
 
     test "change-slide buttons update PresentationServer state", %{conn: conn, deck: deck, id: id} do
@@ -98,6 +100,16 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
       assert second_slide == PresentationServer.get_slide(id)
       assert live_view |> element(@prev_button_selector) |> render_click()
       assert first_slide == PresentationServer.get_slide(id)
+    end
+
+    test "finish button finishes presentation", %{conn: conn, id: id} do
+      user = user_fixture()
+      conn = log_in_user(conn, user)
+      {:ok, live_view, _html} = live(conn, ~p"/present/#{id}")
+
+      assert live_view |> element(@finish_button_selector) |> render_click()
+
+      refute PresentationServer.exists?(id)
     end
 
     test "handles :finished", %{conn: conn, id: id} do
