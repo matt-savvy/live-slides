@@ -7,6 +7,12 @@
   </:actions>
 </.header>
 
+<div
+  :for={slide <- @deck.slides}
+  class="m-4 w-full min-h-screen border border-solid border-500-slate p-4"
+>
+  <.markdown_block body={slide.body} />
+</div>
 
 <.back navigate={~p"/decks"}>Back to decks</.back>
 
