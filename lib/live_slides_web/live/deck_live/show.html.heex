@@ -1,6 +1,5 @@
 <.header>
-  Deck <%= @deck.id %>
-  <:subtitle>This is a deck record from your database.</:subtitle>
+  <%= @deck.title %>
   <:actions>
     <.link patch={~p"/decks/#{@deck}/show/edit"} phx-click={JS.push_focus()}>
       <.button>Edit deck</.button>
@@ -8,9 +7,6 @@
   </:actions>
 </.header>
 
-<.list>
-  <:item title="Title"><%= @deck.title %></:item>
-</.list>
 
 <.back navigate={~p"/decks"}>Back to decks</.back>
 
