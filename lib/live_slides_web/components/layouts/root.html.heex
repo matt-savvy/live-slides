@@ -14,6 +14,12 @@
   <body class="bg-white antialiased">
     <ul class="relative z-10 flex items-center gap-4 px-4 sm:px-6 lg:px-8 justify-end">
       <%= if @current_user do %>
+        <li class="text-[0.8125rem] font-bold text-zinc-900 hover:text-zinc-700 ">
+          <a href={~p"/decks/"}>
+            Decks
+          </a>
+        </li>
+
         <li class="text-[0.8125rem] leading-6 text-zinc-900">
           <%= @current_user.email %>
         </li>
