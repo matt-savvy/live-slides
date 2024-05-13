@@ -38,6 +38,14 @@ defmodule LiveSlidesWeb.DeckLive.Index do
   end
 
   @impl true
+  def handle_event("present", %{"id" => id}, socket) do
+    deck = Presentations.get_deck!(id)
+    {:ok, id} = Presentations.present(deck)
+
+    {:noreply, socket |> push_navigate(to: ~p"/present/#{id}")}
+  end
+
+  @impl true
   def handle_event("delete", %{"id" => id}, socket) do
     deck = Presentations.get_deck!(id)
     {:ok, _} = Presentations.delete_deck(deck)

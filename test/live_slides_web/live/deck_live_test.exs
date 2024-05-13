@@ -7,6 +7,17 @@ defmodule LiveSlidesWeb.DeckLiveTest do
   @create_attrs %{title: "some title"}
   @update_attrs %{title: "some updated title"}
   @invalid_attrs %{title: nil}
+
+  setup do
+    start_supervised!({DynamicSupervisor, name: TestSupervisor})
+
+    Application.put_env(:live_slides, :supervisor, TestSupervisor)
+
+    on_exit(fn ->
+      Application.delete_env(:live_slides, :supervisor)
+    end)
+  end
+
   defp create_deck(_) do
     deck = deck_fixture()
     %{deck: deck}
@@ -74,21 +85,26 @@ defmodule LiveSlidesWeb.DeckLiveTest do
       assert index_live |> element("#decks-#{deck.id} a", "Delete") |> render_click()
       refute has_element?(index_live, "#decks-#{deck.id}")
     end
+
+    test "starts presentation and redirects", %{conn: conn, deck: deck} do
+      {:ok, index_live, _html} = live(conn, ~p"/decks")
+
+      {:ok, present_live, _html} =
+        index_live
+        |> element(~s{[data-present-deck="#{deck.id}"]})
+        |> render_click()
+        |> follow_redirect(conn)
+
+      assert [{:undefined, _pid, :worker, [LiveSlides.Presentations.PresentationServer]}] =
+               DynamicSupervisor.which_children(TestSupervisor)
+
+      assert %{module: LiveSlidesWeb.PresentationLive} = present_live
+    end
   end
 
   describe "Show" do
     @present_button_selector ~s{[data-id="present"]}
     setup [:create_deck, :register_and_log_in_user]
-
-    setup do
-      start_supervised!({DynamicSupervisor, name: TestSupervisor})
-
-      Application.put_env(:live_slides, :supervisor, TestSupervisor)
-
-      on_exit(fn ->
-        Application.delete_env(:live_slides, :supervisor)
-      end)
-    end
 
     test "displays deck", %{conn: conn, deck: deck} do
       {:ok, _show_live, html} = live(conn, ~p"/decks/#{deck}")
