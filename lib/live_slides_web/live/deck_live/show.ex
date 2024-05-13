@@ -18,4 +18,11 @@ defmodule LiveSlidesWeb.DeckLive.Show do
 
   defp page_title(:show), do: "Show Deck"
   defp page_title(:edit), do: "Edit Deck"
+
+  @impl true
+  def handle_event("present", _params, socket) do
+    {:ok, id} = Presentations.present(socket.assigns.deck)
+
+    {:noreply, socket |> push_navigate(to: ~p"/present/#{id}")}
+  end
 end

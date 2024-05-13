@@ -4,6 +4,10 @@
     <.link patch={~p"/decks/#{@deck}/show/edit"} phx-click={JS.push_focus()}>
       <.button>Edit deck</.button>
     </.link>
+
+    <.button phx-click="present" data-id="present">
+      Present Deck
+    </.button>
   </:actions>
 </.header>
 
