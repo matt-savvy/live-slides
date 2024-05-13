@@ -33,7 +33,7 @@ defmodule LiveSlidesWeb.DeckLive.FormComponent do
             </label>
 
             <input type="hidden" name="deck[slide_order][]" value={f_nested.index} />
-            <.input type="textarea" field={f_nested[:body]} />
+            <.input type="textarea" rows={12} field={f_nested[:body]} />
           </div>
         </.inputs_for>
 
