@@ -681,7 +681,7 @@ defmodule LiveSlidesWeb.CoreComponents do
 
   def markdown_block(assigns) do
     ~H"""
-    <div class={@class}>
+    <div class={["prose prose-zinc prose-sm md:prose-md lg:prose-xl", @class]}>
       <%= @body |> md_to_html |> HTML.raw() %>
     </div>
     """
