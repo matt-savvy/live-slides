@@ -20,10 +20,11 @@
     <.link patch={~p"/decks/#{deck}/edit"}>Edit</.link>
   </:action>
   <:action :let={{id, deck}}>
-    <.link data-present-deck={deck.id} phx-click="present" phx-value-id={deck.id}>
+    <.link class="mx-2" data-present-deck={deck.id} phx-click="present" phx-value-id={deck.id}>
       Present
     </.link>
     <.link
+      class="mx-2"
       phx-click={JS.push("delete", value: %{id: deck.id}) |> hide("##{id}")}
       data-confirm="Are you sure?"
     >
