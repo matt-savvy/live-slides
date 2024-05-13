@@ -7,7 +7,7 @@ defmodule LiveSlides.Presentations.Deck do
   schema "decks" do
     field :title, :string
     field :user_id, :id
-    embeds_many :slides, Slide
+    embeds_many :slides, Slide, on_replace: :delete
 
     timestamps(type: :utc_datetime)
   end
@@ -17,6 +17,9 @@ defmodule LiveSlides.Presentations.Deck do
     deck
     |> cast(attrs, [:title])
     |> validate_required([:title])
-    |> cast_embed(:slides)
+    |> cast_embed(:slides,
+      sort_param: :slide_order,
+      drop_param: :slide_delete
+    )
   end
 end

@@ -20,6 +20,28 @@ defmodule LiveSlidesWeb.DeckLive.FormComponent do
         phx-submit="save"
       >
         <.input field={@form[:title]} type="text" label="Title" />
+        <.inputs_for :let={f_nested} field={@form[:slides]}>
+          <div>
+            <label class="block cursor-pointer">
+              <input
+                type="checkbox"
+                name="deck[slide_delete][]"
+                value={f_nested.index}
+                class="hidden"
+              />
+              <.icon name="hero-x-mark" /> Delete
+            </label>
+
+            <input type="hidden" name="deck[slide_order][]" value={f_nested.index} />
+            <.input type="textarea" field={f_nested[:body]} />
+          </div>
+        </.inputs_for>
+
+        <label class="block cursor-pointer">
+          <input type="checkbox" name="deck[slide_order][]" class="hidden" />
+          <.icon name="hero-plus-circle" /> Add more
+        </label>
+
         <:actions>
           <.button phx-disable-with="Saving...">Save Deck</.button>
         </:actions>
