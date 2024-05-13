@@ -1,0 +1,26 @@
+<.header>
+  Deck <%= @deck.id %>
+  <:subtitle>This is a deck record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/decks/#{@deck}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit deck</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Title"><%= @deck.title %></:item>
+</.list>
+
+<.back navigate={~p"/decks"}>Back to decks</.back>
+
+<.modal :if={@live_action == :edit} id="deck-modal" show on_cancel={JS.patch(~p"/decks/#{@deck}")}>
+  <.live_component
+    module={LiveSlidesWeb.DeckLive.FormComponent}
+    id={@deck.id}
+    title={@page_title}
+    action={@live_action}
+    deck={@deck}
+    patch={~p"/decks/#{@deck}"}
+  />
+</.modal>

@@ -1,0 +1,41 @@
+<.header>
+  Listing Decks
+  <:actions>
+    <.link patch={~p"/decks/new"}>
+      <.button>New Deck</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="decks"
+  rows={@streams.decks}
+  row_click={fn {_id, deck} -> JS.navigate(~p"/decks/#{deck}") end}
+>
+  <:col :let={{_id, deck}} label="Title"><%= deck.title %></:col>
+  <:action :let={{_id, deck}}>
+    <div class="sr-only">
+      <.link navigate={~p"/decks/#{deck}"}>Show</.link>
+    </div>
+    <.link patch={~p"/decks/#{deck}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, deck}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: deck.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="deck-modal" show on_cancel={JS.patch(~p"/decks")}>
+  <.live_component
+    module={LiveSlidesWeb.DeckLive.FormComponent}
+    id={@deck.id || :new}
+    title={@page_title}
+    action={@live_action}
+    deck={@deck}
+    patch={~p"/decks"}
+  />
+</.modal>
