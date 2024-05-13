@@ -18,6 +18,7 @@ defmodule LiveSlidesWeb.CoreComponents do
 
   alias Phoenix.LiveView.JS
   import LiveSlidesWeb.Gettext
+  alias Phoenix.HTML
 
   @doc """
   Renders a modal.
@@ -670,5 +671,25 @@ defmodule LiveSlidesWeb.CoreComponents do
   """
   def translate_errors(errors, field) when is_list(errors) do
     for {^field, {msg, opts}} <- errors, do: translate_error({msg, opts})
+  end
+
+  @doc """
+  Converts markdown input and adds basic styling.
+  """
+  attr :body, :string, required: true
+  attr :class, :string, default: nil
+
+  def markdown_block(assigns) do
+    ~H"""
+    <div class={["prose prose-sm", @class]}>
+      <%= @body |> md_to_html |> HTML.raw() %>
+    </div>
+    """
+  end
+
+  defp md_to_html(nil), do: nil
+
+  defp md_to_html(body) do
+    MDEx.to_html(body)
   end
 end
