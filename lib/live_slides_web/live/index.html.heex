@@ -1,0 +1,11 @@
+<.header>
+  Listing Presentations
+</.header>
+
+<.table id="decks" rows={@presentations}>
+  <:col :let={{title, id}} label="Title">
+    <.link navigate={~p"/present/#{id}"} data-id={"presentation-#{id}"}>
+      <%= title %>
+    </.link>
+  </:col>
+</.table>

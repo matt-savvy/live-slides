@@ -74,6 +74,8 @@ defmodule LiveSlidesWeb.Router do
 
       live "/decks/:id", DeckLive.Show, :show
       live "/decks/:id/show/edit", DeckLive.Show, :edit
+
+      live "/presentations", PresentationLive.Index, :index
     end
 
     get "/users/settings", UserSettingsController, :edit
