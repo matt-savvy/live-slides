@@ -1,5 +1,6 @@
 <div :if={@live_action in [:present, :view_solo]}>
   <.button
+    :if={@live_action in [:present, :view_solo]}
     data-id="change-slide-prev"
     phx-click="change-slide"
     phx-value-direction="prev"
@@ -9,6 +10,7 @@
   </.button>
 
   <.button
+    :if={@live_action in [:present, :view_solo]}
     data-id="change-slide-next"
     phx-click="change-slide"
     phx-value-direction="next"
@@ -17,7 +19,12 @@
     Next Slide
   </.button>
 
-  <.button data-id="finish-presentation" phx-click="finish" type="button">
+  <.button
+    :if={@live_action == :present}
+    data-id="finish-presentation"
+    phx-click="finish"
+    type="button"
+  >
     Finish Presentation
   </.button>
 </div>
