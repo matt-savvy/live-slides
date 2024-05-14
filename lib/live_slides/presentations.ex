@@ -115,6 +115,17 @@ defmodule LiveSlides.Presentations do
   end
 
   @doc """
+  List Presentations
+  """
+  def list_presentations do
+    DynamicSupervisor.which_children(supervisor())
+    |> Enum.map(fn {:undefined, pid, :worker, _modules} ->
+      %{id: id, title: title} = :sys.get_state(pid)
+      {title, id}
+    end)
+  end
+
+  @doc """
   Finishes a Presentation.
   """
   def finish(id) do
