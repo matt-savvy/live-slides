@@ -112,6 +112,20 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
       assert first_slide == PresentationServer.get_slide(id)
     end
 
+    test ":view_solo change-slide buttons update LV state", %{conn: conn, deck: deck, id: id} do
+      assert Presentations.finish(id)
+
+      [first_slide, second_slide | _rest] = deck.slides
+      {:ok, live_view, _html} = live(conn, ~p"/presentations/view/#{id}")
+
+      assert live_view |> has_element?(@next_button_selector)
+      assert live_view |> has_element?(@prev_button_selector)
+
+      assert live_view |> element(@next_button_selector) |> render_click() =~ second_slide.body
+
+      assert live_view |> element(@prev_button_selector) |> render_click() =~ first_slide.body
+    end
+
     test "finish button finishes presentation", %{conn: conn, id: id} do
       user = user_fixture()
       conn = log_in_user(conn, user)

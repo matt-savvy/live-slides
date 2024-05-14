@@ -1,4 +1,4 @@
-<div :if={@live_action == :present}>
+<div :if={@live_action in [:present, :view_solo]}>
   <.button
     data-id="change-slide-prev"
     phx-click="change-slide"

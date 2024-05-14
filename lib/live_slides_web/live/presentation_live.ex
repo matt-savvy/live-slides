@@ -47,8 +47,16 @@ defmodule LiveSlidesWeb.PresentationLive do
         "prev" -> :prev_slide
       end
 
-    apply(PresentationServer, action, [socket.assigns.id])
-    {:noreply, socket}
+    case socket.assigns.live_action do
+      :present ->
+        apply(PresentationServer, action, [socket.assigns.id])
+        {:noreply, socket}
+
+      :view_solo ->
+        next_state = apply(PresentationState, action, [socket.assigns.state])
+        %{body: body} = PresentationState.get_slide(next_state)
+        {:noreply, socket |> assign(:state, next_state) |> assign(:body, body)}
+    end
   end
 
   @impl true
