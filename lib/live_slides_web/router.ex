@@ -21,6 +21,7 @@ defmodule LiveSlidesWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+    live "/presentations/view/:id", PresentationLive, :view_solo
     live "/presentations/:id", PresentationLive, :view
   end
 

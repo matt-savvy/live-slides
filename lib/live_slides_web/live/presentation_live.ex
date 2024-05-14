@@ -2,23 +2,41 @@ defmodule LiveSlidesWeb.PresentationLive do
   use LiveSlidesWeb, :live_view
 
   alias LiveSlides.Presentations
-  alias LiveSlides.Presentations.PresentationServer
+  alias LiveSlides.Presentations.{PresentationServer, PresentationState}
 
   @impl true
-  def mount(%{"id" => id}, _session, socket) do
-    case PresentationServer.exists?(id) do
-      true -> {:ok, socket}
-      false -> raise LiveSlidesWeb.PresentationLive.NotFound
-    end
+  def mount(_params, _session, socket) do
+    {:ok, socket}
   end
 
   @impl true
   def handle_params(%{"id" => id}, _uri, socket) do
+    {:noreply, apply_action(socket, id, socket.assigns.live_action)}
+  end
+
+  def apply_action(socket, id, action) when action in [:present, :view] do
+    if not PresentationServer.exists?(id) do
+      raise LiveSlidesWeb.PresentationLive.NotFound
+    end
+
     title = PresentationServer.title(id)
     :ok = Presentations.subscribe(id)
 
     %{body: body} = PresentationServer.get_slide(id)
-    {:noreply, socket |> assign(:page_title, title) |> assign(:id, id) |> assign(:body, body)}
+    socket |> assign(:page_title, title) |> assign(:id, id) |> assign(:body, body)
+  end
+
+  def apply_action(socket, id, :view_solo) do
+    deck = Presentations.list_decks() |> List.first()
+    state = PresentationState.new(id, deck)
+    title = PresentationState.title(state)
+    %{body: body} = PresentationState.get_slide(state)
+
+    socket
+    |> assign(:page_title, title)
+    |> assign(:id, id)
+    |> assign(:body, body)
+    |> assign(:state, state)
   end
 
   @impl true
