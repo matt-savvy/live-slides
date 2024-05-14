@@ -118,11 +118,16 @@ defmodule LiveSlides.Presentations do
   List Presentations
   """
   def list_presentations do
-    DynamicSupervisor.which_children(supervisor())
-    |> Enum.map(fn {:undefined, pid, :worker, _modules} ->
-      %{id: id, title: title} = :sys.get_state(pid)
+    :global.registered_names()
+    |> Enum.filter(fn
+      {:presentation, _id} -> true
+      _ -> false
+    end)
+    |> Enum.map(fn {:presentation, id} ->
+      title = PresentationServer.title(id)
       {title, id}
     end)
+    |> Enum.sort_by(fn {title, _id} -> title end)
   end
 
   @doc """
