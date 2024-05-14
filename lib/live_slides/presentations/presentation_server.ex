@@ -107,10 +107,15 @@ defmodule LiveSlides.Presentations.PresentationServer do
   def handle_cast(action, state) when action in [:next_slide, :prev_slide] do
     next_state = apply(PresentationState, action, [state])
 
-    slide = PresentationState.get_slide(next_state)
-    Presentations.broadcast!(next_state.id, {:slide_changed, slide})
+    if next_state == state do
+      # no op
+      {:noreply, next_state, timeout()}
+    else
+      slide = PresentationState.get_slide(next_state)
+      Presentations.broadcast!(next_state.id, {:slide_changed, slide})
 
-    {:noreply, next_state, timeout()}
+      {:noreply, next_state, timeout()}
+    end
   end
 
   @impl true

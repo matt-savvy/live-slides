@@ -33,20 +33,28 @@ defmodule LiveSlides.Presentations.PresentationServerTest do
 
     PresentationServer.next_slide(id)
     assert third_slide == PresentationServer.get_slide(id)
+    # assert here to make sure this message is no longer in the
+    # mailbox before we test the no-op case
+    assert_receive {:slide_changed, ^third_slide}
 
     # no op
     PresentationServer.next_slide(id)
     assert third_slide == PresentationServer.get_slide(id)
+    refute_receive {:slide_changed, ^third_slide}
 
     PresentationServer.prev_slide(id)
     assert second_slide == PresentationServer.get_slide(id)
 
     PresentationServer.prev_slide(id)
     assert first_slide == PresentationServer.get_slide(id)
+    # assert here to make sure this message is no longer in the
+    # mailbox before we test the no-op case
+    assert_receive {:slide_changed, ^first_slide}
 
     # no op
     PresentationServer.prev_slide(id)
     assert first_slide == PresentationServer.get_slide(id)
+    refute_receive {:slide_changed, ^first_slide}
   end
 
   test "stops after timeout and broadcasts" do
