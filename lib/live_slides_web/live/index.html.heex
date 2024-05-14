@@ -8,4 +8,9 @@
       <%= title %>
     </.link>
   </:col>
+  <:col :let={{_title, id}}>
+    <.link navigate={~p"/presentations/#{id}"} data-id={"presentation-#{id}"}>
+      Presentation Link
+    </.link>
+  </:col>
 </.table>
