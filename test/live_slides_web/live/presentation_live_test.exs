@@ -86,6 +86,20 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
       assert render(live_view) =~ first_slide.body
     end
 
+    test ":view_solo is not subscribed to presentation", %{conn: conn, id: id} do
+      {:ok, live_view, _html} = live(conn, ~p"/presentations/view/#{id}")
+
+      assert :ok = Presentations.broadcast!(id, :finished)
+
+      # force test process to wait until the server and live view
+      # processes have handled these messages.
+      # we can safely assume the live view has received our
+      # pubsub message
+      _ = :sys.get_state(live_view.pid)
+
+      refute render(live_view) =~ "The presentation has ended."
+    end
+
     test "buttons not rendered for :view", %{conn: conn, id: id} do
       {:ok, live_view, _html} = live(conn, ~p"/presentations/#{id}")
 
