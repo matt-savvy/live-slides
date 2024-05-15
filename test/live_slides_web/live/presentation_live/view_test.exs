@@ -8,7 +8,7 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
   alias LiveSlides.Presentations
   alias LiveSlides.Presentations.PresentationServer
 
-  describe "PresentationLive" do
+  describe "PresentationLive.View" do
     @next_button_selector ~s{[data-id="change-slide-next"]}
     @prev_button_selector ~s{[data-id="change-slide-prev"]}
     @finish_button_selector ~s{[data-id="finish-presentation"]}

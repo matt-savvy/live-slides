@@ -98,7 +98,7 @@ defmodule LiveSlidesWeb.DeckLiveTest do
       assert [{:undefined, _pid, :worker, [LiveSlides.Presentations.PresentationServer]}] =
                DynamicSupervisor.which_children(TestSupervisor)
 
-      assert %{module: LiveSlidesWeb.PresentationLive} = present_live
+      assert %{module: LiveSlidesWeb.PresentationLive.View} = present_live
     end
   end
 
@@ -148,7 +148,7 @@ defmodule LiveSlidesWeb.DeckLiveTest do
       assert [{:undefined, _pid, :worker, [LiveSlides.Presentations.PresentationServer]}] =
                DynamicSupervisor.which_children(TestSupervisor)
 
-      assert %{module: LiveSlidesWeb.PresentationLive} = present_live
+      assert %{module: LiveSlidesWeb.PresentationLive.View} = present_live
     end
   end
 end

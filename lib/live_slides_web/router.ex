@@ -21,8 +21,8 @@ defmodule LiveSlidesWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
-    live "/presentations/view/:id", PresentationLive, :view_solo
-    live "/presentations/:id", PresentationLive, :view
+    live "/presentations/view/:id", PresentationLive.View, :view_solo
+    live "/presentations/:id", PresentationLive.View, :view
   end
 
   # Other scopes may use custom stacks.
@@ -67,7 +67,7 @@ defmodule LiveSlidesWeb.Router do
 
     live_session :require_authenticated_user,
       on_mount: [{LiveSlidesWeb.UserAuth, :ensure_authenticated}] do
-      live "/present/:id", PresentationLive, :present
+      live "/present/:id", PresentationLive.View, :present
 
       live "/decks", DeckLive.Index, :index
       live "/decks/new", DeckLive.Index, :new

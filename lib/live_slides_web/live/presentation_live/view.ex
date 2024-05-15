@@ -1,4 +1,4 @@
-defmodule LiveSlidesWeb.PresentationLive do
+defmodule LiveSlidesWeb.PresentationLive.View do
   use LiveSlidesWeb, :live_view
 
   alias LiveSlides.Presentations
