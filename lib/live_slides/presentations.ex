@@ -117,7 +117,7 @@ defmodule LiveSlides.Presentations do
   @doc """
   List Presentations
   """
-  def list_presentations do
+  def list_live_presentations do
     :global.registered_names()
     |> Enum.filter(fn
       {:presentation, _id} -> true

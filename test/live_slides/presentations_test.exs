@@ -82,12 +82,12 @@ defmodule LiveSlides.PresentationsTest do
       assert [_presentation_server] = DynamicSupervisor.which_children(TestSupervisor)
     end
 
-    test "list_presentations/1 lists PresentationServers" do
+    test "list_live_presentations/0 lists PresentationServers" do
       {:ok, id_1} = Presentations.present(deck_fixture(%{title: "first title"}))
       {:ok, id_2} = Presentations.present(deck_fixture(%{title: "second title"}))
 
       assert [{"first title", ^id_1}, {"second title", ^id_2}] =
-               Presentations.list_presentations()
+               Presentations.list_live_presentations()
     end
 
     test "finish/2 stops a PresentationServer and broadcasts" do

@@ -10,7 +10,7 @@ defmodule LiveSlidesWeb.PresentationLive.Index do
 
   @impl true
   def handle_params(_params, _url, socket) do
-    presentations = Presentations.list_presentations()
+    presentations = Presentations.list_live_presentations()
 
     {:noreply, assign(socket, :presentations, presentations)}
   end
