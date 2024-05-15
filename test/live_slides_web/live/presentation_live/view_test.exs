@@ -30,7 +30,7 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
 
     test ":view / :present gets state from genserver", %{conn: conn, deck: deck, id: id} do
       [first_slide | _rest] = deck.slides
-      {:ok, live_view, html} = live(conn, ~p"/presentations/#{id}")
+      {:ok, live_view, html} = live(conn, ~p"/presentations/live/#{id}")
 
       assert page_title(live_view) =~ deck.title
       assert html =~ first_slide.body
@@ -50,7 +50,7 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
       id = Ecto.UUID.generate()
 
       assert_raise LiveSlidesWeb.PresentationLive.NotFound, fn ->
-        live(conn, ~p"/presentations/#{id}")
+        live(conn, ~p"/presentations/live/#{id}")
       end
 
       user = user_fixture()
@@ -63,7 +63,7 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
 
     test "subscribes to presentation", %{conn: conn, deck: deck, id: id} do
       [first_slide, second_slide | _rest] = deck.slides
-      {:ok, live_view, html} = live(conn, ~p"/presentations/#{id}")
+      {:ok, live_view, html} = live(conn, ~p"/presentations/live/#{id}")
 
       assert html =~ first_slide.body
       PresentationServer.next_slide(id)
@@ -101,7 +101,7 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
     end
 
     test "buttons not rendered for :view", %{conn: conn, id: id} do
-      {:ok, live_view, _html} = live(conn, ~p"/presentations/#{id}")
+      {:ok, live_view, _html} = live(conn, ~p"/presentations/live/#{id}")
 
       refute live_view |> has_element?(@next_button_selector)
       refute live_view |> has_element?(@prev_button_selector)
@@ -157,7 +157,7 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
     end
 
     test "handles :finished", %{conn: conn, id: id} do
-      {:ok, live_view, _html} = live(conn, ~p"/presentations/#{id}")
+      {:ok, live_view, _html} = live(conn, ~p"/presentations/live/#{id}")
 
       send(live_view.pid, :finished)
 
