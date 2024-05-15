@@ -40,7 +40,7 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
       [first_slide | _rest] = deck.slides
       assert Presentations.finish(id)
 
-      {:ok, live_view, html} = live(conn, ~p"/presentations/view/#{id}")
+      {:ok, live_view, html} = live(conn, ~p"/presentations/view_solo/#{id}")
 
       assert page_title(live_view) =~ deck.title
       assert html =~ first_slide.body
@@ -87,7 +87,7 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
     end
 
     test ":view_solo is not subscribed to presentation", %{conn: conn, id: id} do
-      {:ok, live_view, _html} = live(conn, ~p"/presentations/view/#{id}")
+      {:ok, live_view, _html} = live(conn, ~p"/presentations/view_solo/#{id}")
 
       assert :ok = Presentations.broadcast!(id, :finished)
 
@@ -130,7 +130,7 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
       assert Presentations.finish(id)
 
       [first_slide, second_slide | _rest] = deck.slides
-      {:ok, live_view, _html} = live(conn, ~p"/presentations/view/#{id}")
+      {:ok, live_view, _html} = live(conn, ~p"/presentations/view_solo/#{id}")
 
       assert live_view |> has_element?(@next_button_selector)
       assert live_view |> has_element?(@prev_button_selector)
@@ -151,7 +151,7 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
     end
 
     test ":view_solo not shown finish button", %{conn: conn, id: id} do
-      {:ok, live_view, _html} = live(conn, ~p"/presentations/view/#{id}")
+      {:ok, live_view, _html} = live(conn, ~p"/presentations/view_solo/#{id}")
 
       refute live_view |> has_element?(@finish_button_selector)
     end
