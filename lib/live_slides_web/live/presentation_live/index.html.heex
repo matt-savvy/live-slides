@@ -2,15 +2,20 @@
   Listing Presentations
 </.header>
 
-<.table id="decks" rows={@presentations}>
-  <:col :let={{title, id}} label="Title">
-    <.link navigate={~p"/presentations/present/#{id}"} data-id={"present-#{id}"}>
-      <%= title %>
-    </.link>
-  </:col>
-  <:col :let={{_title, id}}>
-    <.link navigate={~p"/presentations/live/#{id}"} data-id={"presentation-#{id}"}>
-      Presentation Link
-    </.link>
-  </:col>
-</.table>
+<div class="my-8">
+  <div class="text-md font-medium">
+    Live Presentations
+  </div>
+  <.table id="decks" rows={@presentations}>
+    <:col :let={{title, id}} label="Title">
+      <.link navigate={~p"/presentations/present/#{id}"} data-id={"present-#{id}"}>
+        <%= title %>
+      </.link>
+    </:col>
+    <:col :let={{_title, id}}>
+      <.link navigate={~p"/presentations/live/#{id}"} data-id={"presentation-#{id}"}>
+        Presentation Link
+      </.link>
+    </:col>
+  </.table>
+</div>
