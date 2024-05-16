@@ -98,13 +98,22 @@ defmodule LiveSlides.PresentationsTest do
       end)
     end
 
-    test "present/2 starts a PresentationServer" do
+    test "present/2 starts a PresentationServer for a deck" do
       deck = deck_fixture()
 
       {:ok, id} = Presentations.present(deck)
       assert [_presentation_server] = DynamicSupervisor.which_children(TestSupervisor)
 
       assert %Presentation{} = Repo.get(Presentation, id)
+    end
+
+    test "present/2 starts a PresentationServer for a presentation if needed" do
+      %{id: id} = presentation = presentation_fixture()
+
+      assert {:ok, ^id} = Presentations.present(presentation)
+      assert [_presentation_server] = DynamicSupervisor.which_children(TestSupervisor)
+
+      assert {:error, :already_started} = Presentations.present(presentation)
     end
 
     test "tag_live_presentations/1 returns live presentations" do

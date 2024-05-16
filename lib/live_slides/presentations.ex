@@ -103,13 +103,22 @@ defmodule LiveSlides.Presentations do
   end
 
   @doc """
-  Starts a Presentation for a `Deck`
+  Starts a Presentation for a `Deck` or `Presentation`.
   """
   def present(%Deck{} = deck) do
     with {:ok, %Presentation{id: id}} <- create_presentation(deck),
          {:ok, _pid} <-
            DynamicSupervisor.start_child(supervisor(), {PresentationServer, {id, deck}}) do
       {:ok, id}
+    end
+  end
+
+  def present(%Presentation{id: id} = presentation) do
+    with {:ok, _pid} <-
+           DynamicSupervisor.start_child(supervisor(), {PresentationServer, {id, presentation}}) do
+      {:ok, id}
+    else
+      {:error, {:already_started, _pid}} -> {:error, :already_started}
     end
   end
 
