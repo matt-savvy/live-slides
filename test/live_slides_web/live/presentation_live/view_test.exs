@@ -36,6 +36,15 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
       assert html =~ first_slide.body
     end
 
+    test ":live gets redirected if not live", %{conn: conn} do
+      %{id: id} = presentation_fixture()
+
+      redirect_path = ~p"/presentations/view/#{id}"
+
+      assert {:error, {:live_redirect, %{to: ^redirect_path}}} =
+               live(conn, ~p"/presentations/live/#{id}")
+    end
+
     test ":present gets state", %{conn: conn, deck: deck, id: id} do
       user = user_fixture()
       conn = log_in_user(conn, user)
@@ -58,13 +67,8 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
       assert html =~ first_slide.body
     end
 
-    test "live/ :present handles when presentation is not found", %{conn: conn} do
+    test ":present raises NotFound when presentation is not found", %{conn: conn} do
       id = Ecto.UUID.generate()
-
-      assert_raise LiveSlidesWeb.PresentationLive.NotFound, fn ->
-        live(conn, ~p"/presentations/live/#{id}")
-      end
-
       user = user_fixture()
       conn = log_in_user(conn, user)
 

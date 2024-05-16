@@ -28,14 +28,15 @@ defmodule LiveSlidesWeb.PresentationLive.View do
 
   def apply_action(socket, id, :live) do
     if not PresentationServer.exists?(id) do
-      raise LiveSlidesWeb.PresentationLive.NotFound
+      socket
+      |> push_patch(to: ~p"/presentations/view/#{id}", replace: true)
+    else
+      title = PresentationServer.title(id)
+      :ok = Presentations.subscribe(id)
+
+      %{body: body} = PresentationServer.get_slide(id)
+      socket |> assign(:page_title, title) |> assign(:id, id) |> assign(:body, body)
     end
-
-    title = PresentationServer.title(id)
-    :ok = Presentations.subscribe(id)
-
-    %{body: body} = PresentationServer.get_slide(id)
-    socket |> assign(:page_title, title) |> assign(:id, id) |> assign(:body, body)
   end
 
   def apply_action(socket, id, :view) do
