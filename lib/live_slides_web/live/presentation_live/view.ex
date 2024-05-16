@@ -27,8 +27,11 @@ defmodule LiveSlidesWeb.PresentationLive.View do
   end
 
   def apply_action(socket, id, :view) do
-    deck = Presentations.list_decks() |> List.first()
-    state = PresentationState.new(id, deck)
+    state =
+      id
+      |> Presentations.get_presentation!()
+      |> PresentationState.new()
+
     title = PresentationState.title(state)
     %{body: body} = PresentationState.get_slide(state)
 

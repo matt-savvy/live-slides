@@ -47,13 +47,14 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
       assert html =~ first_slide.body
     end
 
-    test ":view gets state from deck", %{conn: conn, deck: deck, id: id} do
-      [first_slide | _rest] = deck.slides
-      assert Presentations.finish(id)
+    test ":view gets state from presentation", %{conn: conn} do
+      %{id: id, slides: slides, title: title} = presentation_fixture()
+      [first_slide | _rest] = slides
+      refute PresentationServer.exists?(id)
 
       {:ok, live_view, html} = live(conn, ~p"/presentations/view/#{id}")
 
-      assert page_title(live_view) =~ deck.title
+      assert page_title(live_view) =~ title
       assert html =~ first_slide.body
     end
 
