@@ -3,6 +3,7 @@ defmodule LiveSlides.PresentationsTest do
 
   alias LiveSlides.Presentations
   alias LiveSlides.Presentations.{Deck, Deck.Slide, Presentation, PresentationServer}
+  alias LiveSlides.Repo
 
   import LiveSlides.PresentationsFixtures
 
@@ -90,8 +91,10 @@ defmodule LiveSlides.PresentationsTest do
     test "present/2 starts a PresentationServer" do
       deck = deck_fixture()
 
-      {:ok, _id} = Presentations.present(deck)
+      {:ok, id} = Presentations.present(deck)
       assert [_presentation_server] = DynamicSupervisor.which_children(TestSupervisor)
+
+      assert %Presentation{} = Repo.get(Presentation, id)
     end
 
     test "list_live_presentations/0 lists PresentationServers" do

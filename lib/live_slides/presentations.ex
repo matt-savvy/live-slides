@@ -106,10 +106,9 @@ defmodule LiveSlides.Presentations do
   Starts a Presentation for a `Deck`
   """
   def present(%Deck{} = deck) do
-    id = Ecto.UUID.generate()
-    spec = {PresentationServer, {id, deck}}
-
-    with {:ok, _pid} <- DynamicSupervisor.start_child(supervisor(), spec) do
+    with {:ok, %Presentation{id: id}} <- create_presentation(deck),
+         {:ok, _pid} <-
+           DynamicSupervisor.start_child(supervisor(), {PresentationServer, {id, deck}}) do
       {:ok, id}
     end
   end
