@@ -10,11 +10,15 @@ defmodule LiveSlides.Presentations.PresentationState do
     prev_slides: []
   ]
 
-  alias LiveSlides.Presentations.Deck
+  alias LiveSlides.Presentations.{Deck, Presentation}
 
   @doc """
   Creates new PresentationState
   """
+  def new(%Presentation{id: id, title: title, slides: slides}) do
+    %__MODULE__{id: id, title: title, slides: slides}
+  end
+
   def new(id, %Deck{title: title, slides: slides}) do
     %__MODULE__{id: id, title: title, slides: slides}
   end
