@@ -14,7 +14,19 @@ defmodule LiveSlidesWeb.PresentationLive.View do
     {:noreply, apply_action(socket, id, socket.assigns.live_action)}
   end
 
-  def apply_action(socket, id, action) when action in [:present, :live] do
+  def apply_action(socket, id, :present) do
+    if not PresentationServer.exists?(id) do
+      raise LiveSlidesWeb.PresentationLive.NotFound
+    end
+
+    title = PresentationServer.title(id)
+    :ok = Presentations.subscribe(id)
+
+    %{body: body} = PresentationServer.get_slide(id)
+    socket |> assign(:page_title, title) |> assign(:id, id) |> assign(:body, body)
+  end
+
+  def apply_action(socket, id, :live) do
     if not PresentationServer.exists?(id) do
       raise LiveSlidesWeb.PresentationLive.NotFound
     end
