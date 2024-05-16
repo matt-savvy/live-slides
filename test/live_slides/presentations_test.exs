@@ -2,7 +2,7 @@ defmodule LiveSlides.PresentationsTest do
   use LiveSlides.DataCase, async: false
 
   alias LiveSlides.Presentations
-  alias LiveSlides.Presentations.{Deck, Deck.Slide, PresentationServer}
+  alias LiveSlides.Presentations.{Deck, Deck.Slide, Presentation, PresentationServer}
 
   import LiveSlides.PresentationsFixtures
 
@@ -65,6 +65,18 @@ defmodule LiveSlides.PresentationsTest do
   end
 
   describe "presentations" do
+    test "create_presentation/1 from deck creates presentation" do
+      deck = deck_fixture()
+
+      assert {:ok, %Presentation{} = presentation} = Presentations.create_presentation(deck)
+      assert presentation.title == deck.title
+
+      assert Enum.map(presentation.slides, &Map.delete(&1, :id)) ==
+               Enum.map(deck.slides, &Map.delete(&1, :id))
+    end
+  end
+
+  describe "live presentations" do
     setup do
       start_supervised!({DynamicSupervisor, name: TestSupervisor})
 

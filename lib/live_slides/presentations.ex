@@ -6,7 +6,7 @@ defmodule LiveSlides.Presentations do
   import Ecto.Query, warn: false
   alias LiveSlides.Repo
 
-  alias LiveSlides.Presentations.{Deck, PresentationServer, PresentationSupervisor}
+  alias LiveSlides.Presentations.{Deck, Presentation, PresentationServer, PresentationSupervisor}
 
   @doc """
   Returns the list of decks.
@@ -115,7 +115,23 @@ defmodule LiveSlides.Presentations do
   end
 
   @doc """
-  List Presentations
+  Create a Presentation from a `Deck`
+  """
+  def create_presentation(%Deck{} = deck) do
+    params =
+      deck
+      |> Map.take([:slides, :title])
+      |> Map.update!(:slides, fn slides ->
+        Enum.map(slides, fn slide -> Map.from_struct(slide) end)
+      end)
+
+    %Presentation{}
+    |> Presentation.changeset(params)
+    |> Repo.insert()
+  end
+
+  @doc """
+  List live Presentations
   """
   def list_live_presentations do
     :global.registered_names()
