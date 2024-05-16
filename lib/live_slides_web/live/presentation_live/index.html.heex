@@ -7,15 +7,56 @@
     Live Presentations
   </div>
   <.table id="decks" rows={@presentations}>
-    <:col :let={{title, id}} label="Title">
-      <.link navigate={~p"/presentations/present/#{id}"} data-id={"present-#{id}"}>
-        <%= title %>
+    <:col :let={{_status, presentation}} label="Title">
+      <%= presentation.title %>
+    </:col>
+
+    <:col :let={{status, presentation}} label="Public Link">
+      <.link
+        :if={status == :live}
+        navigate={~p"/presentations/live/#{presentation.id}"}
+        data-id={"live-#{presentation.id}"}
+      >
+        Live Link
+      </.link>
+
+      <.link
+        :if={status == :not_live}
+        navigate={~p"/presentations/view/#{presentation.id}"}
+        data-id={"view-#{presentation.id}"}
+      >
+        Public Link
       </.link>
     </:col>
-    <:col :let={{_title, id}}>
-      <.link navigate={~p"/presentations/live/#{id}"} data-id={"presentation-#{id}"}>
-        Presentation Link
+
+    <:action :let={{status, presentation}}>
+      <.link
+        :if={status == :live}
+        class="mx-2"
+        navigate={~p"/presentations/present/#{presentation.id}"}
+        data-id={"present-#{presentation.id}"}
+      >
+        Presentation Controls
       </.link>
-    </:col>
+
+      <span :if={status == :not_live}>
+        <.link
+          class="mx-2"
+          navigate={~p"/presentations/view/#{presentation.id}"}
+          data-id={"view-#{presentation.id}"}
+        >
+          Dry Run Presentation
+        </.link>
+
+        <.link
+          class="mx-2"
+          phx-click="present"
+          phx-value-id={presentation.id}
+          data-id={"start-presentation-#{presentation.id}"}
+        >
+          Start Live Presentation
+        </.link>
+      </span>
+    </:action>
   </.table>
 </div>

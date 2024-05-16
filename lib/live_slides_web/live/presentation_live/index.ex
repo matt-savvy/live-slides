@@ -10,8 +10,26 @@ defmodule LiveSlidesWeb.PresentationLive.Index do
 
   @impl true
   def handle_params(_params, _url, socket) do
-    presentations = Presentations.list_live_presentations()
+    tagged_presentations =
+      Presentations.list_presentations()
+      |> Presentations.tag_live_presentations()
 
-    {:noreply, assign(socket, :presentations, presentations)}
+    {:noreply, assign(socket, :presentations, tagged_presentations)}
+  end
+
+  @impl true
+  def handle_event("present", %{"id" => id}, socket) do
+    presentation = Presentations.get_presentation!(id)
+
+    case Presentations.present(presentation) do
+      {:ok, ^id} ->
+        {:noreply, socket |> push_navigate(to: ~p"/presentations/present/#{id}")}
+
+      {:error, :already_started} ->
+        {:noreply,
+         socket
+         |> put_flash(:error, "This Presentation is already Live!")
+         |> push_navigate(to: ~p"/presentations/present/#{id}")}
+    end
   end
 end
