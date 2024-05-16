@@ -144,6 +144,35 @@ defmodule LiveSlides.Presentations do
   end
 
   @doc """
+  Wrap presentations in a tuple indicating liveness.
+
+  {:live, %Presentation} {:not_live, %Presentation{}}
+  """
+  def tag_live_presentations(presentations) do
+    live_presentations =
+      :global.registered_names()
+      |> Enum.filter(fn
+        {:presentation, _id} -> true
+        _ -> false
+      end)
+      |> Enum.map(fn {:presentation, id} ->
+        id
+      end)
+      |> MapSet.new()
+
+    presentations
+    |> Enum.map(fn presentation ->
+      status =
+        case MapSet.member?(live_presentations, presentation.id) do
+          true -> :live
+          false -> :not_live
+        end
+
+      {status, presentation}
+    end)
+  end
+
+  @doc """
   List live Presentations
   """
   def list_live_presentations do

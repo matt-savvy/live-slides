@@ -107,6 +107,25 @@ defmodule LiveSlides.PresentationsTest do
       assert %Presentation{} = Repo.get(Presentation, id)
     end
 
+    test "tag_live_presentations/1 returns live presentations" do
+      [id_1, id_2, id_3] =
+        0..2
+        |> Enum.map(fn _ ->
+          {:ok, id} = Presentations.present(deck_fixture())
+          id
+        end)
+
+      Presentations.finish(id_2)
+
+      presentations = Presentations.list_presentations()
+
+      assert [
+               {:live, %Presentation{id: ^id_1}},
+               {:not_live, %Presentation{id: ^id_2}},
+               {:live, %Presentation{id: ^id_3}}
+             ] = Presentations.tag_live_presentations(presentations)
+    end
+
     test "list_live_presentations/0 lists PresentationServers" do
       {:ok, id_1} = Presentations.present(deck_fixture(%{title: "first title"}))
       {:ok, id_2} = Presentations.present(deck_fixture(%{title: "second title"}))
