@@ -28,9 +28,20 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
       %{deck: deck, id: id}
     end
 
-    test ":live / :present gets state from genserver", %{conn: conn, deck: deck, id: id} do
+    test ":live gets state", %{conn: conn, deck: deck, id: id} do
       [first_slide | _rest] = deck.slides
       {:ok, live_view, html} = live(conn, ~p"/presentations/live/#{id}")
+
+      assert page_title(live_view) =~ deck.title
+      assert html =~ first_slide.body
+    end
+
+    test ":present gets state", %{conn: conn, deck: deck, id: id} do
+      user = user_fixture()
+      conn = log_in_user(conn, user)
+
+      [first_slide | _rest] = deck.slides
+      {:ok, live_view, html} = live(conn, ~p"/presentations/present/#{id}")
 
       assert page_title(live_view) =~ deck.title
       assert html =~ first_slide.body
