@@ -32,4 +32,16 @@ defmodule LiveSlides.PresentationsFixtures do
 
     deck
   end
+
+  @doc """
+  Generate a Presentation
+  """
+  def presentation_fixture(attrs \\ %{}) do
+    {:ok, presentation} =
+      attrs
+      |> deck_fixture()
+      |> LiveSlides.Presentations.create_presentation()
+
+    presentation
+  end
 end

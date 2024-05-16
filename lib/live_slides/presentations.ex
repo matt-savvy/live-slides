@@ -114,6 +114,13 @@ defmodule LiveSlides.Presentations do
   end
 
   @doc """
+  Gets a single presentation.
+
+  Raises `Ecto.NoResultsError` if the Deck does not exist.
+  """
+  def get_presentation!(id), do: Repo.get!(Presentation, id)
+
+  @doc """
   Create a Presentation from a `Deck`
   """
   def create_presentation(%Deck{} = deck) do
