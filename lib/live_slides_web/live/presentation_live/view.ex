@@ -26,7 +26,7 @@ defmodule LiveSlidesWeb.PresentationLive.View do
     socket |> assign(:page_title, title) |> assign(:id, id) |> assign(:body, body)
   end
 
-  def apply_action(socket, id, :view_solo) do
+  def apply_action(socket, id, :view) do
     deck = Presentations.list_decks() |> List.first()
     state = PresentationState.new(id, deck)
     title = PresentationState.title(state)
@@ -52,7 +52,7 @@ defmodule LiveSlidesWeb.PresentationLive.View do
         apply(PresentationServer, action, [socket.assigns.id])
         {:noreply, socket}
 
-      :view_solo ->
+      :view ->
         next_state = apply(PresentationState, action, [socket.assigns.state])
         %{body: body} = PresentationState.get_slide(next_state)
         {:noreply, socket |> assign(:state, next_state) |> assign(:body, body)}

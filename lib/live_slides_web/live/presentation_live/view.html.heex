@@ -1,6 +1,6 @@
-<div :if={@live_action in [:present, :view_solo]}>
+<div :if={@live_action in [:present, :view]}>
   <.button
-    :if={@live_action in [:present, :view_solo]}
+    :if={@live_action in [:present, :view]}
     data-id="change-slide-prev"
     phx-click="change-slide"
     phx-value-direction="prev"
@@ -10,7 +10,7 @@
   </.button>
 
   <.button
-    :if={@live_action in [:present, :view_solo]}
+    :if={@live_action in [:present, :view]}
     data-id="change-slide-next"
     phx-click="change-slide"
     phx-value-direction="next"

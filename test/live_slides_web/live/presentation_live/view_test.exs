@@ -36,11 +36,11 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
       assert html =~ first_slide.body
     end
 
-    test ":view_solo gets state from deck", %{conn: conn, deck: deck, id: id} do
+    test ":view gets state from deck", %{conn: conn, deck: deck, id: id} do
       [first_slide | _rest] = deck.slides
       assert Presentations.finish(id)
 
-      {:ok, live_view, html} = live(conn, ~p"/presentations/view_solo/#{id}")
+      {:ok, live_view, html} = live(conn, ~p"/presentations/view/#{id}")
 
       assert page_title(live_view) =~ deck.title
       assert html =~ first_slide.body
@@ -86,8 +86,8 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
       assert render(live_view) =~ first_slide.body
     end
 
-    test ":view_solo is not subscribed to presentation", %{conn: conn, id: id} do
-      {:ok, live_view, _html} = live(conn, ~p"/presentations/view_solo/#{id}")
+    test ":view is not subscribed to presentation", %{conn: conn, id: id} do
+      {:ok, live_view, _html} = live(conn, ~p"/presentations/view/#{id}")
 
       assert :ok = Presentations.broadcast!(id, :finished)
 
@@ -126,11 +126,11 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
       assert first_slide == PresentationServer.get_slide(id)
     end
 
-    test ":view_solo change-slide buttons update LV state", %{conn: conn, deck: deck, id: id} do
+    test ":view change-slide buttons update LV state", %{conn: conn, deck: deck, id: id} do
       assert Presentations.finish(id)
 
       [first_slide, second_slide | _rest] = deck.slides
-      {:ok, live_view, _html} = live(conn, ~p"/presentations/view_solo/#{id}")
+      {:ok, live_view, _html} = live(conn, ~p"/presentations/view/#{id}")
 
       assert live_view |> has_element?(@next_button_selector)
       assert live_view |> has_element?(@prev_button_selector)
@@ -150,8 +150,8 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
       refute PresentationServer.exists?(id)
     end
 
-    test ":view_solo not shown finish button", %{conn: conn, id: id} do
-      {:ok, live_view, _html} = live(conn, ~p"/presentations/view_solo/#{id}")
+    test ":view not shown finish button", %{conn: conn, id: id} do
+      {:ok, live_view, _html} = live(conn, ~p"/presentations/view/#{id}")
 
       refute live_view |> has_element?(@finish_button_selector)
     end
