@@ -5,14 +5,17 @@ defmodule LiveSlidesWeb.PresentationLive.IndexTest do
   import Phoenix.LiveViewTest
   alias LiveSlides.Presentations
 
-  setup do
-    start_supervised!({DynamicSupervisor, name: TestSupervisor})
-
+  setup_all do
     Application.put_env(:live_slides, :supervisor, TestSupervisor)
 
     on_exit(fn ->
       Application.delete_env(:live_slides, :supervisor)
     end)
+  end
+
+  setup do
+    start_supervised!({DynamicSupervisor, name: TestSupervisor})
+    :ok
   end
 
   describe "Index" do

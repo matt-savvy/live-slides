@@ -7,6 +7,19 @@ defmodule LiveSlides.PresentationsTest do
 
   import LiveSlides.PresentationsFixtures
 
+  setup_all do
+    Application.put_env(:live_slides, :supervisor, TestSupervisor)
+
+    on_exit(fn ->
+      Application.delete_env(:live_slides, :supervisor)
+    end)
+  end
+
+  setup do
+    start_supervised!({DynamicSupervisor, name: TestSupervisor})
+    :ok
+  end
+
   describe "decks" do
     @invalid_attrs %{title: nil}
 
@@ -88,16 +101,6 @@ defmodule LiveSlides.PresentationsTest do
   end
 
   describe "live presentations" do
-    setup do
-      start_supervised!({DynamicSupervisor, name: TestSupervisor})
-
-      Application.put_env(:live_slides, :supervisor, TestSupervisor)
-
-      on_exit(fn ->
-        Application.delete_env(:live_slides, :supervisor)
-      end)
-    end
-
     test "present/2 starts a PresentationServer for a deck" do
       deck = deck_fixture()
 

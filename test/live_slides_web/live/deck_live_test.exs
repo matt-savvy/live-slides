@@ -8,14 +8,17 @@ defmodule LiveSlidesWeb.DeckLiveTest do
   @update_attrs %{title: "some updated title"}
   @invalid_attrs %{title: nil}
 
-  setup do
-    start_supervised!({DynamicSupervisor, name: TestSupervisor})
-
+  setup_all do
     Application.put_env(:live_slides, :supervisor, TestSupervisor)
 
     on_exit(fn ->
       Application.delete_env(:live_slides, :supervisor)
     end)
+  end
+
+  setup do
+    start_supervised!({DynamicSupervisor, name: TestSupervisor})
+    :ok
   end
 
   defp create_deck(_) do
