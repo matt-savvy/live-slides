@@ -90,6 +90,11 @@ defmodule LiveSlidesWeb.PresentationLive.View do
 
   @impl true
   def handle_info(:finished, socket) do
-    {:noreply, socket |> put_flash(:info, "The presentation has ended.")}
+    {
+      :noreply,
+      socket
+      |> put_flash(:info, "The presentation has ended.")
+      |> push_patch(to: ~p"/presentations/view/#{socket.assigns.id}", replace: true)
+    }
   end
 end

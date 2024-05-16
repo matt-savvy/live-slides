@@ -166,9 +166,13 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
       conn = log_in_user(conn, user)
       {:ok, live_view, _html} = live(conn, ~p"/presentations/present/#{id}")
 
-      assert live_view |> element(@finish_button_selector) |> render_click()
+      assert live_view
+             |> element(@finish_button_selector)
+             |> render_click()
 
       refute PresentationServer.exists?(id)
+
+      assert_patch(live_view, ~p"/presentations/view/#{id}")
     end
 
     test ":view not shown finish button", %{conn: conn, id: id} do
@@ -183,6 +187,7 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
       send(live_view.pid, :finished)
 
       assert render(live_view) =~ "The presentation has ended."
+      assert_patch(live_view, ~p"/presentations/view/#{id}")
     end
   end
 end
