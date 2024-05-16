@@ -23,6 +23,6 @@ defmodule LiveSlidesWeb.DeckLive.Show do
   def handle_event("present", _params, socket) do
     {:ok, id} = Presentations.present(socket.assigns.deck)
 
-    {:noreply, socket |> push_navigate(to: ~p"/present/#{id}")}
+    {:noreply, socket |> push_navigate(to: ~p"/presentations/present/#{id}")}
   end
 end

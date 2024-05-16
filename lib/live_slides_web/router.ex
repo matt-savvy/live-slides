@@ -67,7 +67,7 @@ defmodule LiveSlidesWeb.Router do
 
     live_session :require_authenticated_user,
       on_mount: [{LiveSlidesWeb.UserAuth, :ensure_authenticated}] do
-      live "/present/:id", PresentationLive.View, :present
+      live "/presentations/present/:id", PresentationLive.View, :present
 
       live "/decks", DeckLive.Index, :index
       live "/decks/new", DeckLive.Index, :new

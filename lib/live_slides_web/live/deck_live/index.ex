@@ -42,7 +42,7 @@ defmodule LiveSlidesWeb.DeckLive.Index do
     deck = Presentations.get_deck!(id)
     {:ok, id} = Presentations.present(deck)
 
-    {:noreply, socket |> push_navigate(to: ~p"/present/#{id}")}
+    {:noreply, socket |> push_navigate(to: ~p"/presentations/present/#{id}")}
   end
 
   @impl true

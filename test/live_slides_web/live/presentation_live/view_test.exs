@@ -57,7 +57,7 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
       conn = log_in_user(conn, user)
 
       assert_raise LiveSlidesWeb.PresentationLive.NotFound, fn ->
-        live(conn, ~p"/present/#{id}")
+        live(conn, ~p"/presentations/present/#{id}")
       end
     end
 
@@ -113,7 +113,7 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
       conn = log_in_user(conn, user)
 
       [first_slide, second_slide | _rest] = deck.slides
-      {:ok, live_view, _html} = live(conn, ~p"/present/#{id}")
+      {:ok, live_view, _html} = live(conn, ~p"/presentations/present/#{id}")
 
       assert live_view |> has_element?(@next_button_selector)
       assert live_view |> has_element?(@prev_button_selector)
@@ -143,7 +143,7 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
     test "finish button finishes presentation", %{conn: conn, id: id} do
       user = user_fixture()
       conn = log_in_user(conn, user)
-      {:ok, live_view, _html} = live(conn, ~p"/present/#{id}")
+      {:ok, live_view, _html} = live(conn, ~p"/presentations/present/#{id}")
 
       assert live_view |> element(@finish_button_selector) |> render_click()
 

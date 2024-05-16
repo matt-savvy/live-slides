@@ -4,7 +4,7 @@
 
 <.table id="decks" rows={@presentations}>
   <:col :let={{title, id}} label="Title">
-    <.link navigate={~p"/present/#{id}"} data-id={"present-#{id}"}>
+    <.link navigate={~p"/presentations/present/#{id}"} data-id={"present-#{id}"}>
       <%= title %>
     </.link>
   </:col>

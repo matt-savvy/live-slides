@@ -35,7 +35,7 @@ defmodule LiveSlidesWeb.PresentationLive.IndexTest do
              |> element(~s{[data-id="present-#{id}"]})
              |> render_click()
 
-      assert_redirect(index_live, ~p"/present/#{id}")
+      assert_redirect(index_live, ~p"/presentations/present/#{id}")
 
       {:ok, index_live, _html} = live(conn, ~p"/presentations")
 
