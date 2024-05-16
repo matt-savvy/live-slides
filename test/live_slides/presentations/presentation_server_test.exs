@@ -19,6 +19,15 @@ defmodule LiveSlides.Presentations.PresentationServerTest do
 
     pid = start_supervised!({PresentationServer, {id, deck}}, id: id)
     assert PresentationServer.exists?(id)
+
+    %{id: presentation_id} = presentation = presentation_fixture()
+
+    start_supervised!({PresentationServer, {presentation_id, presentation}},
+      id: presentation_id
+    )
+
+    assert PresentationServer.exists?(id)
+
     start_supervised!({PresentationServer, {other_id, other_deck}}, id: other_id)
     assert :ok = Presentations.subscribe(id)
 

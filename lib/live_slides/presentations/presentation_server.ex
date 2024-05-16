@@ -6,15 +6,15 @@ defmodule LiveSlides.Presentations.PresentationServer do
   use GenServer, restart: :transient
 
   alias LiveSlides.Presentations
-  alias LiveSlides.Presentations.{Deck, PresentationState}
+  alias LiveSlides.Presentations.{Deck, Presentation, PresentationState}
 
   @timeout 60 * 60 * 1000
 
   @doc """
   Starts a PresentationServer process linked to the current process.
   """
-  def start_link({id, %Deck{} = deck}) do
-    GenServer.start_link(__MODULE__, [id, deck], name: name(id))
+  def start_link({id, deck_or_presentation}) do
+    GenServer.start_link(__MODULE__, [id, deck_or_presentation], name: name(id))
   end
 
   @doc """
@@ -89,8 +89,12 @@ defmodule LiveSlides.Presentations.PresentationServer do
   end
 
   @impl true
-  def init([id, deck]) do
+  def init([id, %Deck{} = deck]) do
     {:ok, PresentationState.new(id, deck), timeout()}
+  end
+
+  def init([id, %Presentation{id: id} = presentation]) do
+    {:ok, PresentationState.new(presentation), timeout()}
   end
 
   @impl true
