@@ -8,20 +8,25 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
   alias LiveSlides.Presentations
   alias LiveSlides.Presentations.PresentationServer
 
+  setup_all do
+    Application.put_env(:live_slides, :supervisor, TestSupervisor)
+
+    on_exit(fn ->
+      Application.delete_env(:live_slides, :supervisor)
+    end)
+  end
+
+  setup do
+    start_supervised!({DynamicSupervisor, name: TestSupervisor})
+    :ok
+  end
+
   describe "PresentationLive.View" do
     @next_button_selector ~s{[data-id="change-slide-next"]}
     @prev_button_selector ~s{[data-id="change-slide-prev"]}
     @finish_button_selector ~s{[data-id="finish-presentation"]}
 
     setup do
-      start_supervised!({DynamicSupervisor, name: TestSupervisor})
-
-      Application.put_env(:live_slides, :supervisor, TestSupervisor)
-
-      on_exit(fn ->
-        Application.delete_env(:live_slides, :supervisor)
-      end)
-
       deck = deck_fixture()
       {:ok, id} = Presentations.present(deck)
 
