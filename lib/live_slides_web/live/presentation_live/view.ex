@@ -14,7 +14,7 @@ defmodule LiveSlidesWeb.PresentationLive.View do
     {:noreply, apply_action(socket, id, socket.assigns.live_action)}
   end
 
-  def apply_action(socket, id, action) when action in [:present, :view] do
+  def apply_action(socket, id, action) when action in [:present, :live] do
     if not PresentationServer.exists?(id) do
       raise LiveSlidesWeb.PresentationLive.NotFound
     end

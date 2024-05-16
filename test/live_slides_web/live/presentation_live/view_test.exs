@@ -28,7 +28,7 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
       %{deck: deck, id: id}
     end
 
-    test ":view / :present gets state from genserver", %{conn: conn, deck: deck, id: id} do
+    test ":live / :present gets state from genserver", %{conn: conn, deck: deck, id: id} do
       [first_slide | _rest] = deck.slides
       {:ok, live_view, html} = live(conn, ~p"/presentations/live/#{id}")
 
@@ -46,7 +46,7 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
       assert html =~ first_slide.body
     end
 
-    test ":view / :present handles when presentation is not found", %{conn: conn} do
+    test "live/ :present handles when presentation is not found", %{conn: conn} do
       id = Ecto.UUID.generate()
 
       assert_raise LiveSlidesWeb.PresentationLive.NotFound, fn ->
@@ -100,7 +100,7 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
       refute render(live_view) =~ "The presentation has ended."
     end
 
-    test "buttons not rendered for :view", %{conn: conn, id: id} do
+    test "buttons not rendered for :live", %{conn: conn, id: id} do
       {:ok, live_view, _html} = live(conn, ~p"/presentations/live/#{id}")
 
       refute live_view |> has_element?(@next_button_selector)

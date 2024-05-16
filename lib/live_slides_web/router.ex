@@ -22,7 +22,7 @@ defmodule LiveSlidesWeb.Router do
 
     get "/", PageController, :home
     live "/presentations/view_solo/:id", PresentationLive.View, :view_solo
-    live "/presentations/live/:id", PresentationLive.View, :view
+    live "/presentations/live/:id", PresentationLive.View, :live
   end
 
   # Other scopes may use custom stacks.
