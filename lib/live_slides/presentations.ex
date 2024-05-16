@@ -137,6 +137,13 @@ defmodule LiveSlides.Presentations do
   end
 
   @doc """
+  List Presentations.
+  """
+  def list_presentations do
+    Repo.all(Presentation)
+  end
+
+  @doc """
   List live Presentations
   """
   def list_live_presentations do

@@ -66,6 +66,11 @@ defmodule LiveSlides.PresentationsTest do
   end
 
   describe "presentations" do
+    test "list_presentations/0 returns all presentations" do
+      presentation = presentation_fixture()
+      assert Presentations.list_presentations() == [presentation]
+    end
+
     test "get_presentation!/1 returns the presentation with given id" do
       presentation = presentation_fixture()
       assert Presentations.get_presentation!(presentation.id) == presentation
