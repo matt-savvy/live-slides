@@ -54,6 +54,8 @@ defmodule LiveSlidesWeb do
       use Phoenix.LiveView,
         layout: {LiveSlidesWeb.Layouts, :app}
 
+      on_mount Sentry.LiveViewHook
+
       unquote(html_helpers())
     end
   end

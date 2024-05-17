@@ -53,7 +53,9 @@ defmodule LiveSlides.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
       {:plug_cowboy, "~> 2.5"},
-      {:mdex, "~> 0.1.16"}
+      {:mdex, "~> 0.1.16"},
+      {:sentry, "~> 10.6"},
+      {:hackney, "~> 1.20"}
     ]
   end
 
