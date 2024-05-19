@@ -182,22 +182,6 @@ defmodule LiveSlides.Presentations do
   end
 
   @doc """
-  List live Presentations
-  """
-  def list_live_presentations do
-    :global.registered_names()
-    |> Enum.filter(fn
-      {:presentation, _id} -> true
-      _ -> false
-    end)
-    |> Enum.map(fn {:presentation, id} ->
-      title = PresentationServer.title(id)
-      {title, id}
-    end)
-    |> Enum.sort_by(fn {title, _id} -> title end)
-  end
-
-  @doc """
   Finishes a Presentation.
   """
   def finish(id) do
