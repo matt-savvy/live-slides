@@ -9,13 +9,7 @@ defmodule LiveSlidesWeb.DeckLiveTest do
   @update_attrs %{title: "some updated title"}
   @invalid_attrs %{title: nil}
 
-  setup_all do
-    Application.put_env(:live_slides, :supervisor, TestSupervisor)
-
-    on_exit(fn ->
-      Application.delete_env(:live_slides, :supervisor)
-    end)
-  end
+  setup_all :set_env_test_supervisor
 
   setup :start_test_supervisor
 

@@ -9,19 +9,13 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
   alias LiveSlides.Presentations
   alias LiveSlides.Presentations.PresentationServer
 
-  setup_all do
-    Application.put_env(:live_slides, :supervisor, TestSupervisor)
+  setup_all :set_env_test_supervisor
 
-    on_exit(fn ->
-      Application.delete_env(:live_slides, :supervisor)
-    end)
-  end
+  setup :start_test_supervisor
 
   setup do
     %{anon_conn: Phoenix.ConnTest.build_conn()}
   end
-
-  setup :start_test_supervisor
 
   defp create_and_present(%{user: user}) do
     deck = deck_fixture(%{user: user})
