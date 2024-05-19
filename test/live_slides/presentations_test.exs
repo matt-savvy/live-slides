@@ -5,6 +5,7 @@ defmodule LiveSlides.PresentationsTest do
   alias LiveSlides.Presentations.{Deck, Deck.Slide, Presentation, PresentationServer}
   alias LiveSlides.Repo
 
+  import LiveSlides.AccountsFixtures
   import LiveSlides.PresentationsFixtures
 
   setup_all do
@@ -34,13 +35,17 @@ defmodule LiveSlides.PresentationsTest do
     end
 
     test "create_deck/1 with valid data creates a deck" do
+      user = user_fixture()
+
       valid_attrs = %{
         title: "some title",
+        user_id: user.id,
         slides: [%{body: "this is the first slide"}, %{body: "this is the second slide"}]
       }
 
       assert {:ok, %Deck{} = deck} = Presentations.create_deck(valid_attrs)
       assert deck.title == "some title"
+      assert deck.user_id == user.id
 
       assert [
                %Slide{body: "this is the first slide"},

@@ -15,7 +15,7 @@ defmodule LiveSlides.Presentations.Deck do
   @doc false
   def changeset(deck, attrs) do
     deck
-    |> cast(attrs, [:title])
+    |> cast(attrs, [:title, :user_id])
     |> validate_required([:title])
     |> cast_embed(:slides,
       sort_param: :slide_order,

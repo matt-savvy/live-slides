@@ -23,7 +23,7 @@ defmodule LiveSlidesWeb.DeckLive.Index do
   defp apply_action(socket, :new, _params) do
     socket
     |> assign(:page_title, "New Deck")
-    |> assign(:deck, %Deck{})
+    |> assign(:deck, %Deck{user_id: socket.assigns.current_user.id})
   end
 
   defp apply_action(socket, :index, _params) do
