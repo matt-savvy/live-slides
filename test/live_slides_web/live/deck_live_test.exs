@@ -21,13 +21,13 @@ defmodule LiveSlidesWeb.DeckLiveTest do
     :ok
   end
 
-  defp create_deck(_) do
-    deck = deck_fixture()
+  defp create_deck(%{user: user}) do
+    deck = deck_fixture(%{user: user})
     %{deck: deck}
   end
 
   describe "Index" do
-    setup [:create_deck, :register_and_log_in_user]
+    setup [:register_and_log_in_user, :create_deck]
 
     test "lists all decks", %{conn: conn, deck: deck} do
       {:ok, _index_live, html} = live(conn, ~p"/decks")
@@ -107,7 +107,7 @@ defmodule LiveSlidesWeb.DeckLiveTest do
 
   describe "Show" do
     @present_button_selector ~s{[data-id="present"]}
-    setup [:create_deck, :register_and_log_in_user]
+    setup [:register_and_log_in_user, :create_deck]
 
     test "displays deck", %{conn: conn, deck: deck} do
       {:ok, _show_live, html} = live(conn, ~p"/decks/#{deck}")
