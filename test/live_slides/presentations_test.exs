@@ -22,7 +22,7 @@ defmodule LiveSlides.PresentationsTest do
   end
 
   describe "decks" do
-    @invalid_attrs %{title: nil}
+    @invalid_attrs %{title: nil, user_id: nil, slides: nil}
 
     test "list_decks/0 returns all decks" do
       deck = deck_fixture()
