@@ -30,14 +30,18 @@ defmodule LiveSlides.Presentations do
 
   ## Examples
 
-      iex> get_deck!(123)
+      iex> get_deck!(123, %{ user_id: 321})
       %Deck{}
 
-      iex> get_deck!(456)
+      iex> get_deck!(456, %{ user_id: 321})
       ** (Ecto.NoResultsError)
 
   """
-  def get_deck!(id), do: Repo.get!(Deck, id)
+  def get_deck!(id, %{user_id: user_id}) do
+    Deck
+    |> where([d], d.id == ^id and d.user_id == ^user_id)
+    |> Repo.one!()
+  end
 
   @doc """
   Creates a deck.

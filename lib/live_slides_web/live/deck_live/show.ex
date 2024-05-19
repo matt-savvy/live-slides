@@ -10,10 +10,12 @@ defmodule LiveSlidesWeb.DeckLive.Show do
 
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
+    user_id = socket.assigns.current_user.id
+
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:deck, Presentations.get_deck!(id))}
+     |> assign(:deck, Presentations.get_deck!(id, %{user_id: user_id}))}
   end
 
   defp page_title(:show), do: "Show Deck"

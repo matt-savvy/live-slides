@@ -35,7 +35,16 @@ defmodule LiveSlides.PresentationsTest do
 
     test "get_deck!/1 returns the deck with given id" do
       deck = deck_fixture()
-      assert Presentations.get_deck!(deck.id) == deck
+      assert Presentations.get_deck!(deck.id, %{user_id: deck.user_id}) == deck
+    end
+
+    test "get_deck!/1 raises for wrong user id" do
+      deck = deck_fixture()
+      %{id: other_user_id} = user_fixture()
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Presentations.get_deck!(deck.id, %{user_id: other_user_id})
+      end
     end
 
     test "create_deck/1 with valid data creates a deck" do
@@ -72,13 +81,16 @@ defmodule LiveSlides.PresentationsTest do
     test "update_deck/2 with invalid data returns error changeset" do
       deck = deck_fixture()
       assert {:error, %Ecto.Changeset{}} = Presentations.update_deck(deck, @invalid_attrs)
-      assert deck == Presentations.get_deck!(deck.id)
+      assert deck == Presentations.get_deck!(deck.id, %{user_id: deck.user_id})
     end
 
     test "delete_deck/1 deletes the deck" do
       deck = deck_fixture()
       assert {:ok, %Deck{}} = Presentations.delete_deck(deck)
-      assert_raise Ecto.NoResultsError, fn -> Presentations.get_deck!(deck.id) end
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Presentations.get_deck!(deck.id, %{user_id: deck.user_id})
+      end
     end
 
     test "change_deck/1 returns a deck changeset" do

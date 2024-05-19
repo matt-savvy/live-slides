@@ -16,9 +16,11 @@ defmodule LiveSlidesWeb.DeckLive.Index do
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do
+    user_id = socket.assigns.current_user.id
+
     socket
     |> assign(:page_title, "Edit Deck")
-    |> assign(:deck, Presentations.get_deck!(id))
+    |> assign(:deck, Presentations.get_deck!(id, %{user_id: user_id}))
   end
 
   defp apply_action(socket, :new, _params) do
@@ -40,7 +42,8 @@ defmodule LiveSlidesWeb.DeckLive.Index do
 
   @impl true
   def handle_event("present", %{"id" => id}, socket) do
-    deck = Presentations.get_deck!(id)
+    user_id = socket.assigns.current_user.id
+    deck = Presentations.get_deck!(id, %{user_id: user_id})
     {:ok, id} = Presentations.present(deck)
 
     {:noreply, socket |> push_navigate(to: ~p"/presentations/present/#{id}")}
@@ -48,7 +51,8 @@ defmodule LiveSlidesWeb.DeckLive.Index do
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
-    deck = Presentations.get_deck!(id)
+    user_id = socket.assigns.current_user.id
+    deck = Presentations.get_deck!(id, %{user_id: user_id})
     {:ok, _} = Presentations.delete_deck(deck)
 
     {:noreply, stream_delete(socket, :decks, deck)}
