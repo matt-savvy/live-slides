@@ -43,6 +43,15 @@ defmodule LiveSlides.Presentations.PresentationServer do
   end
 
   @doc """
+  Returns the user_id.
+  """
+  def user_id(id) do
+    id
+    |> name()
+    |> GenServer.call(:user_id)
+  end
+
+  @doc """
   Returns the title.
   """
   def title(id) do
@@ -98,13 +107,8 @@ defmodule LiveSlides.Presentations.PresentationServer do
   end
 
   @impl true
-  def handle_call(:title, _from, state) do
-    {:reply, PresentationState.title(state), state, timeout()}
-  end
-
-  @impl true
-  def handle_call(:get_slide, _from, state) do
-    {:reply, PresentationState.get_slide(state), state, timeout()}
+  def handle_call(action, _from, state) when action in [:title, :user_id, :get_slide] do
+    {:reply, apply(PresentationState, action, [state]), state, timeout()}
   end
 
   @impl true

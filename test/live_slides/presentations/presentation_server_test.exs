@@ -34,6 +34,7 @@ defmodule LiveSlides.Presentations.PresentationServerTest do
     assert {:ok, ^pid} = PresentationServer.whereis(id)
 
     assert deck.title == PresentationServer.title(id)
+    assert deck.user_id == PresentationServer.user_id(id)
     assert first_slide == PresentationServer.get_slide(id)
     PresentationServer.next_slide(id)
     assert second_slide == PresentationServer.get_slide(id)
