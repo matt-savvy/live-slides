@@ -5,6 +5,7 @@ defmodule LiveSlides.Presentations.PresentationState do
 
   defstruct [
     :id,
+    :user_id,
     title: "",
     slides: [],
     prev_slides: []
@@ -15,12 +16,12 @@ defmodule LiveSlides.Presentations.PresentationState do
   @doc """
   Creates new PresentationState
   """
-  def new(%Presentation{id: id, title: title, slides: slides}) do
-    %__MODULE__{id: id, title: title, slides: slides}
+  def new(%Presentation{id: id, user_id: user_id, title: title, slides: slides}) do
+    %__MODULE__{id: id, user_id: user_id, title: title, slides: slides}
   end
 
-  def new(id, %Deck{title: title, slides: slides}) do
-    %__MODULE__{id: id, title: title, slides: slides}
+  def new(id, %Deck{user_id: user_id, title: title, slides: slides}) do
+    %__MODULE__{id: id, user_id: user_id, title: title, slides: slides}
   end
 
   @doc """
