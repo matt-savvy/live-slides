@@ -25,6 +25,11 @@ defmodule LiveSlides.Presentations.PresentationState do
   end
 
   @doc """
+  Returns the user_id.
+  """
+  def user_id(%__MODULE__{user_id: user_id}), do: user_id
+
+  @doc """
   Returns the title.
   """
   def title(%__MODULE__{title: title}), do: title

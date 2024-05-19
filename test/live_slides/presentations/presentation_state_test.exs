@@ -28,6 +28,13 @@ defmodule LiveSlides.Presentations.PresentationStateTest do
     end
   end
 
+  describe "user_id/1" do
+    test "returns the user_id" do
+      user_id = 256
+      assert user_id == PresentationState.user_id(%PresentationState{user_id: user_id})
+    end
+  end
+
   describe "title/1" do
     test "returns the title" do
       title = "Some Presentation"
