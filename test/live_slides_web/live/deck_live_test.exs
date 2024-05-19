@@ -1,6 +1,7 @@
 defmodule LiveSlidesWeb.DeckLiveTest do
   use LiveSlidesWeb.ConnCase
 
+  import LiveSlides.TestSupervisorHelper
   import Phoenix.LiveViewTest
   import LiveSlides.PresentationsFixtures
 
@@ -16,10 +17,7 @@ defmodule LiveSlidesWeb.DeckLiveTest do
     end)
   end
 
-  setup do
-    start_supervised!({DynamicSupervisor, name: TestSupervisor})
-    :ok
-  end
+  setup :start_test_supervisor
 
   defp create_deck(%{user: user}) do
     deck = deck_fixture(%{user: user})

@@ -2,6 +2,7 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
   use LiveSlidesWeb.ConnCase, async: false
 
   import Phoenix.LiveViewTest
+  import LiveSlides.TestSupervisorHelper
   import LiveSlides.AccountsFixtures
   import LiveSlides.PresentationsFixtures
 
@@ -17,10 +18,10 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
   end
 
   setup do
-    start_supervised!({DynamicSupervisor, name: TestSupervisor})
-
     %{anon_conn: Phoenix.ConnTest.build_conn()}
   end
+
+  setup :start_test_supervisor
 
   defp create_and_present(%{user: user}) do
     deck = deck_fixture(%{user: user})

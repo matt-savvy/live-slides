@@ -1,6 +1,7 @@
 defmodule LiveSlidesWeb.PresentationLive.IndexTest do
   use LiveSlidesWeb.ConnCase
 
+  import LiveSlides.TestSupervisorHelper
   import LiveSlides.PresentationsFixtures
   import Phoenix.LiveViewTest
   alias LiveSlides.Presentations
@@ -13,10 +14,7 @@ defmodule LiveSlidesWeb.PresentationLive.IndexTest do
     end)
   end
 
-  setup do
-    start_supervised!({DynamicSupervisor, name: TestSupervisor})
-    :ok
-  end
+  setup :start_test_supervisor
 
   describe "Index" do
     setup [:register_and_log_in_user]

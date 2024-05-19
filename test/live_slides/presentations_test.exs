@@ -5,6 +5,7 @@ defmodule LiveSlides.PresentationsTest do
   alias LiveSlides.Presentations.{Deck, Deck.Slide, Presentation, PresentationServer}
   alias LiveSlides.Repo
 
+  import LiveSlides.TestSupervisorHelper
   import LiveSlides.AccountsFixtures
   import LiveSlides.PresentationsFixtures
 
@@ -16,10 +17,7 @@ defmodule LiveSlides.PresentationsTest do
     end)
   end
 
-  setup do
-    start_supervised!({DynamicSupervisor, name: TestSupervisor})
-    :ok
-  end
+  setup :start_test_supervisor
 
   describe "decks" do
     @invalid_attrs %{title: nil, user_id: nil, slides: nil}
