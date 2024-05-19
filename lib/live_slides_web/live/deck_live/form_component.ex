@@ -90,6 +90,8 @@ defmodule LiveSlidesWeb.DeckLive.FormComponent do
   end
 
   defp save_deck(socket, :new, deck_params) do
+    deck_params = Map.put(deck_params, "user_id", socket.assigns.deck.user_id)
+
     case Presentations.create_deck(deck_params) do
       {:ok, deck} ->
         notify_parent({:saved, deck})
