@@ -2,6 +2,8 @@ defmodule LiveSlidesWeb.PresentationLive.Index do
   use LiveSlidesWeb, :live_view
 
   alias LiveSlides.Presentations
+  alias LiveSlides.Presentations.PresentationServer
+  alias Phoenix.VerifiedRoutes
 
   @impl true
   def mount(_params, _session, socket) do
@@ -33,5 +35,19 @@ defmodule LiveSlidesWeb.PresentationLive.Index do
          |> put_flash(:error, "This Presentation is already Live!")
          |> push_navigate(to: ~p"/presentations/present/#{id}")}
     end
+  end
+
+  @impl true
+  def handle_event("copy-link", %{"id" => id}, socket) do
+    url =
+      case PresentationServer.exists?(id) do
+        true ->
+          VerifiedRoutes.url(socket, ~p"/presentations/live/#{id}")
+
+        false ->
+          VerifiedRoutes.url(socket, ~p"/presentations/view/#{id}")
+      end
+
+    {:noreply, socket |> push_event("copyLink", %{url: url})}
   end
 end

@@ -2,11 +2,8 @@
   Listing Presentations
 </.header>
 
-<div class="my-8">
-  <div class="text-md font-medium">
-    Live Presentations
-  </div>
-  <.table id="decks" rows={@presentations}>
+<div class="my-8" id="presentations" phx-hook="CopyLink">
+  <.table id="presentations" rows={@presentations}>
     <:col :let={{_status, presentation}} label="Title">
       <%= presentation.title %>
     </:col>
@@ -26,6 +23,16 @@
         data-id={"view-#{presentation.id}"}
       >
         Public Link
+      </.link>
+
+      <.link
+        data-id={"copy-link-#{presentation.id}"}
+        phx-click="copy-link"
+        phx-value-id={presentation.id}
+        title="Click to copy link"
+        class="text-sm font-semibold leading-6 text-zinc-900 hover:text-zinc-700"
+      >
+        <.icon name="hero-clipboard" />
       </.link>
     </:col>
 

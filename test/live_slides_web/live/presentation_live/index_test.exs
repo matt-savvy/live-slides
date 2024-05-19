@@ -37,5 +37,18 @@ defmodule LiveSlidesWeb.PresentationLive.IndexTest do
       assert index_live |> element(~s{[data-id="start-presentation-#{id_2}"]}) |> render_click()
       assert_redirect(index_live, ~p"/presentations/present/#{id_2}")
     end
+
+    test "copy to clipboard link for live presentations", %{conn: conn, user: user} do
+      user_id = user.id
+      %{id: id_1} = pres_1 = presentation_fixture(%{title: "first deck", user_id: user_id})
+      %{id: id_2} = presentation_fixture(%{title: "second deck", user_id: user_id})
+
+      assert {:ok, ^id_1} = Presentations.present(pres_1)
+
+      {:ok, index_live, _html} = live(conn, ~p"/presentations")
+
+      assert index_live |> element(~s{[data-id="copy-link-#{id_1}}) |> render_click()
+      assert index_live |> element(~s{[data-id="copy-link-#{id_2}}) |> render_click()
+    end
   end
 end
