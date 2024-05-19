@@ -28,6 +28,7 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
     @next_button_selector ~s{[data-id="change-slide-next"]}
     @prev_button_selector ~s{[data-id="change-slide-prev"]}
     @finish_button_selector ~s{[data-id="finish-presentation"]}
+    @copy_clipboard_selector ~s{[data-id="copy-link"]}
 
     setup [:register_and_log_in_user, :create_and_present]
 
@@ -185,6 +186,12 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
 
       assert render(live_view) =~ "The presentation has ended."
       assert_patch(live_view, ~p"/presentations/view/#{id}")
+    end
+
+    test "copy to clipboard link", %{conn: conn, id: id} do
+      {:ok, live_view, _html} = live(conn, ~p"/presentations/present/#{id}")
+
+      assert live_view |> element(@copy_clipboard_selector) |> render_click()
     end
   end
 end

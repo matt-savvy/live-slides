@@ -3,6 +3,7 @@ defmodule LiveSlidesWeb.PresentationLive.View do
 
   alias LiveSlides.Presentations
   alias LiveSlides.Presentations.{PresentationServer, PresentationState}
+  alias Phoenix.VerifiedRoutes
 
   @impl true
   def mount(_params, _session, socket) do
@@ -84,6 +85,13 @@ defmodule LiveSlidesWeb.PresentationLive.View do
     Presentations.finish(socket.assigns.id)
 
     {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("copy-link", _, socket) do
+    url = VerifiedRoutes.url(socket, ~p"/presentations/live/#{socket.assigns.id}")
+
+    {:noreply, socket |> push_event("copyLink", %{url: url})}
   end
 
   @impl true

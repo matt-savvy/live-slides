@@ -1,4 +1,4 @@
-<div :if={@live_action in [:present, :view]}>
+<div :if={@live_action in [:present, :view]} id="pres-live-controls" phx-hook="CopyLink">
   <.button
     :if={@live_action in [:present, :view]}
     data-id="change-slide-prev"
@@ -26,6 +26,10 @@
     type="button"
   >
     Finish Presentation
+  </.button>
+
+  <.button data-id="copy-link" phx-click="copy-link" title="Click to copy public link">
+    <.icon name="hero-clipboard-solid" /> Copy Public Link
   </.button>
 </div>
 
