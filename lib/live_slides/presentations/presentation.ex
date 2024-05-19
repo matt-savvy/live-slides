@@ -16,8 +16,8 @@ defmodule LiveSlides.Presentations.Presentation do
   @doc false
   def changeset(presentation, attrs) do
     presentation
-    |> cast(attrs, [:title])
-    |> validate_required([:title])
+    |> cast(attrs, [:title, :user_id])
+    |> validate_required([:title, :user_id])
     |> cast_embed(:slides)
   end
 end

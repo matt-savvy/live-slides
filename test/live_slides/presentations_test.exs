@@ -115,6 +115,7 @@ defmodule LiveSlides.PresentationsTest do
 
       assert {:ok, %Presentation{} = presentation} = Presentations.create_presentation(deck)
       assert presentation.title == deck.title
+      assert presentation.user_id == deck.user_id
 
       assert Enum.map(presentation.slides, &Map.delete(&1, :id)) ==
                Enum.map(deck.slides, &Map.delete(&1, :id))

@@ -141,7 +141,7 @@ defmodule LiveSlides.Presentations do
   def create_presentation(%Deck{} = deck) do
     params =
       deck
-      |> Map.take([:slides, :title])
+      |> Map.take([:slides, :title, :user_id])
       |> Map.update!(:slides, fn slides ->
         Enum.map(slides, fn slide -> Map.from_struct(slide) end)
       end)
