@@ -24,9 +24,13 @@ defmodule LiveSlides.PresentationsTest do
   describe "decks" do
     @invalid_attrs %{title: nil, user_id: nil, slides: nil}
 
-    test "list_decks/0 returns all decks" do
+    test "list_decks/0 returns all decks for user" do
       deck = deck_fixture()
-      assert Presentations.list_decks() == [deck]
+
+      %{id: other_user_id} = user_fixture()
+      _other_deck = deck_fixture(%{user_id: other_user_id})
+
+      assert Presentations.list_decks(%{user_id: deck.user_id}) == [deck]
     end
 
     test "get_deck!/1 returns the deck with given id" do

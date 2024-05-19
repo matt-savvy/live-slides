@@ -6,7 +6,8 @@ defmodule LiveSlidesWeb.DeckLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :decks, Presentations.list_decks())}
+    user_id = socket.assigns.current_user.id
+    {:ok, stream(socket, :decks, Presentations.list_decks(%{user_id: user_id}))}
   end
 
   @impl true

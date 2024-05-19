@@ -17,8 +17,10 @@ defmodule LiveSlides.Presentations do
       [%Deck{}, ...]
 
   """
-  def list_decks do
-    Repo.all(Deck)
+  def list_decks(%{user_id: user_id}) do
+    Deck
+    |> where([d], d.user_id == ^user_id)
+    |> Repo.all()
   end
 
   @doc """
