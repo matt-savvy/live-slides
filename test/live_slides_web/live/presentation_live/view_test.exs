@@ -18,7 +18,15 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
 
   setup do
     start_supervised!({DynamicSupervisor, name: TestSupervisor})
-    :ok
+
+    %{anon_conn: Phoenix.ConnTest.build_conn()}
+  end
+
+  defp create_and_present(%{user: user}) do
+    deck = deck_fixture(%{user: user})
+    {:ok, id} = Presentations.present(deck)
+
+    %{deck: deck, id: id}
   end
 
   describe "PresentationLive.View" do
@@ -26,12 +34,7 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
     @prev_button_selector ~s{[data-id="change-slide-prev"]}
     @finish_button_selector ~s{[data-id="finish-presentation"]}
 
-    setup do
-      deck = deck_fixture()
-      {:ok, id} = Presentations.present(deck)
-
-      %{deck: deck, id: id}
-    end
+    setup [:register_and_log_in_user, :create_and_present]
 
     test ":live gets state", %{conn: conn, deck: deck, id: id} do
       [first_slide | _rest] = deck.slides
@@ -41,7 +44,7 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
       assert html =~ first_slide.body
     end
 
-    test ":live gets redirected if not live", %{conn: conn} do
+    test ":live gets redirected if not live", %{anon_conn: conn} do
       %{id: id} = presentation_fixture()
 
       redirect_path = ~p"/presentations/view/#{id}"
@@ -51,9 +54,6 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
     end
 
     test ":present gets state", %{conn: conn, deck: deck, id: id} do
-      user = user_fixture()
-      conn = log_in_user(conn, user)
-
       [first_slide | _rest] = deck.slides
       {:ok, live_view, html} = live(conn, ~p"/presentations/present/#{id}")
 
@@ -74,6 +74,13 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
 
     test ":present raises NotFound when presentation is not found", %{conn: conn} do
       id = Ecto.UUID.generate()
+
+      assert_raise LiveSlidesWeb.PresentationLive.NotFound, fn ->
+        live(conn, ~p"/presentations/present/#{id}")
+      end
+    end
+
+    test ":present raises NotFound when wrong user", %{anon_conn: conn, id: id} do
       user = user_fixture()
       conn = log_in_user(conn, user)
 
@@ -130,9 +137,6 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
     end
 
     test "change-slide buttons update PresentationServer state", %{conn: conn, deck: deck, id: id} do
-      user = user_fixture()
-      conn = log_in_user(conn, user)
-
       [first_slide, second_slide | _rest] = deck.slides
       {:ok, live_view, _html} = live(conn, ~p"/presentations/present/#{id}")
 
@@ -162,8 +166,6 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
     end
 
     test "finish button finishes presentation", %{conn: conn, id: id} do
-      user = user_fixture()
-      conn = log_in_user(conn, user)
       {:ok, live_view, _html} = live(conn, ~p"/presentations/present/#{id}")
 
       assert live_view

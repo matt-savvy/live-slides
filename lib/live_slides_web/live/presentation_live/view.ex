@@ -15,15 +15,19 @@ defmodule LiveSlidesWeb.PresentationLive.View do
   end
 
   def apply_action(socket, id, :present) do
-    if not PresentationServer.exists?(id) do
-      raise LiveSlidesWeb.PresentationLive.NotFound
+    user_id = socket.assigns.current_user.id
+
+    with true <- PresentationServer.exists?(id),
+         ^user_id <- PresentationServer.user_id(id) do
+      title = PresentationServer.title(id)
+      :ok = Presentations.subscribe(id)
+
+      %{body: body} = PresentationServer.get_slide(id)
+      socket |> assign(:page_title, title) |> assign(:id, id) |> assign(:body, body)
+    else
+      _ ->
+        raise LiveSlidesWeb.PresentationLive.NotFound
     end
-
-    title = PresentationServer.title(id)
-    :ok = Presentations.subscribe(id)
-
-    %{body: body} = PresentationServer.get_slide(id)
-    socket |> assign(:page_title, title) |> assign(:id, id) |> assign(:body, body)
   end
 
   def apply_action(socket, id, :live) do
