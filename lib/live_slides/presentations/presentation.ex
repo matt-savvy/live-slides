@@ -7,6 +7,7 @@ defmodule LiveSlides.Presentations.Presentation do
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "presentations" do
     field :title, :string
+    field :user_id, :id
     embeds_many :slides, Slide, on_replace: :delete
 
     timestamps(type: :utc_datetime)
