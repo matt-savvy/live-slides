@@ -100,9 +100,11 @@ defmodule LiveSlides.PresentationsTest do
   end
 
   describe "presentations" do
-    test "list_presentations/0 returns all presentations" do
+    test "list_presentations/1 returns all presentations for user" do
       presentation = presentation_fixture()
-      assert Presentations.list_presentations() == [presentation]
+      %{id: other_user_id} = user_fixture()
+      _other_presentation = presentation_fixture(%{user_id: other_user_id})
+      assert Presentations.list_presentations(%{user_id: presentation.user_id}) == [presentation]
     end
 
     test "get_presentation!/1 returns the presentation with given id" do
@@ -142,16 +144,18 @@ defmodule LiveSlides.PresentationsTest do
     end
 
     test "tag_live_presentations/1 returns live presentations" do
+      deck = deck_fixture()
+
       [id_1, id_2, id_3] =
         0..2
         |> Enum.map(fn _ ->
-          {:ok, id} = Presentations.present(deck_fixture())
+          {:ok, id} = Presentations.present(deck)
           id
         end)
 
       Presentations.finish(id_2)
 
-      presentations = Presentations.list_presentations()
+      presentations = Presentations.list_presentations(%{user_id: deck.user_id})
 
       assert [
                {:live, %Presentation{id: ^id_1}},

@@ -10,8 +10,10 @@ defmodule LiveSlidesWeb.PresentationLive.Index do
 
   @impl true
   def handle_params(_params, _url, socket) do
+    user_id = socket.assigns.current_user.id
+
     tagged_presentations =
-      Presentations.list_presentations()
+      Presentations.list_presentations(%{user_id: user_id})
       |> Presentations.tag_live_presentations()
 
     {:noreply, assign(socket, :presentations, tagged_presentations)}

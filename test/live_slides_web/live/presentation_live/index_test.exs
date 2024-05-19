@@ -21,9 +21,10 @@ defmodule LiveSlidesWeb.PresentationLive.IndexTest do
   describe "Index" do
     setup [:register_and_log_in_user]
 
-    test "lists all presentations", %{conn: conn} do
-      %{id: id_1} = pres_1 = presentation_fixture(%{title: "first deck"})
-      %{id: id_2} = presentation_fixture(%{title: "second deck"})
+    test "lists all presentations", %{conn: conn, user: user} do
+      user_id = user.id
+      %{id: id_1} = pres_1 = presentation_fixture(%{title: "first deck", user_id: user_id})
+      %{id: id_2} = presentation_fixture(%{title: "second deck", user_id: user_id})
 
       assert {:ok, ^id_1} = Presentations.present(pres_1)
 
