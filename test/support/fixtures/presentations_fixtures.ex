@@ -11,11 +11,9 @@ defmodule LiveSlides.PresentationsFixtures do
   """
   def deck_fixture(attrs \\ %{}) do
     user_id =
-      Map.get_lazy(attrs, :user, fn ->
-        %{id: user_id} = user_fixture()
-
-        user_id
-      end)
+      attrs
+      |> Map.get_lazy(:user, &user_fixture/0)
+      |> Map.get(:id)
 
     {:ok, deck} =
       attrs
