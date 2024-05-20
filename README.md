@@ -1,18 +1,54 @@
 # LiveSlides
 
-To start your Phoenix server:
+Build slide decks using Markdown.
+Present and share them with a link so your audience can follow your slides, right in their own browser.
 
-  * Run `mix setup` to install and setup dependencies
-  * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
+- Create a `Deck`, write your slides using Markdown.
+- When you present a `Deck`, a `Presentation` will be created.
+- When the `Presentation` is live, your audience will be able to use the public link.
+Their view will update as the presenter advances and rewinds the slides.
+- When the `Presentation` is finished, your audience will be able to review the slides on their own.
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+## Setup
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+```
+# start nix shell
+nix-shell
 
-## Learn more
+# start DB container
+docker-compose up -d
 
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+# install deps
+mix deps.get
+
+# create, migrate, and seed DB
+mix ecto.setup
+```
+
+## Running Locally
+
+### Single Node
+
+```
+mix phx.server
+```
+
+### Clustered
+
+In one terminal tab:
+```
+PORT=4000 iex --name a@127.0.0.1 --cookie lorem -S mix phx.server
+```
+
+In another terminal tab:
+```
+PORT=4001 iex --name b@127.0.0.1 --cookie lorem -S mix phx.server
+```
+
+Then, connect the nodes.
+```elixir
+iex(b@127.0.0.1)1> Node.connect(:"a@127.0.0.1")
+true
+iex(b@127.0.0.1)2> Node.list
+[:"a@127.0.0.1"]
+```
