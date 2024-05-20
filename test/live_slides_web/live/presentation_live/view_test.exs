@@ -7,7 +7,7 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
   import LiveSlides.PresentationsFixtures
 
   alias LiveSlides.Presentations
-  alias LiveSlides.Presentations.PresentationServer
+  alias LiveSlides.Presentations.{PresentationServer, PresentationState}
 
   setup_all :set_env_test_supervisor
 
@@ -168,8 +168,6 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
              |> render_click()
 
       refute PresentationServer.exists?(id)
-
-      assert_patch(live_view, ~p"/presentations/view/#{id}")
     end
 
     test ":view not shown finish button", %{conn: conn, id: id} do
@@ -181,10 +179,12 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
     test "handles :finished", %{conn: conn, id: id} do
       {:ok, live_view, _html} = live(conn, ~p"/presentations/live/#{id}")
 
-      send(live_view.pid, :finished)
+      send(live_view.pid, {:finished, %PresentationState{}})
 
       assert render(live_view) =~ "The presentation has ended."
-      assert_patch(live_view, ~p"/presentations/view/#{id}")
+
+      assert live_view |> has_element?(@next_button_selector)
+      assert live_view |> has_element?(@prev_button_selector)
     end
 
     test "copy to clipboard link", %{conn: conn, id: id} do

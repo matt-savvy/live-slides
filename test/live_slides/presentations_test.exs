@@ -2,7 +2,15 @@ defmodule LiveSlides.PresentationsTest do
   use LiveSlides.DataCase, async: false
 
   alias LiveSlides.Presentations
-  alias LiveSlides.Presentations.{Deck, Deck.Slide, Presentation, PresentationServer}
+
+  alias LiveSlides.Presentations.{
+    Deck,
+    Deck.Slide,
+    Presentation,
+    PresentationServer,
+    PresentationState
+  }
+
   alias LiveSlides.Repo
 
   import LiveSlides.TestSupervisorHelper
@@ -166,7 +174,7 @@ defmodule LiveSlides.PresentationsTest do
 
       refute PresentationServer.exists?(id)
 
-      assert_receive :finished
+      assert_receive {:finished, %PresentationState{}}
     end
 
     test "finish/2 handles not found" do

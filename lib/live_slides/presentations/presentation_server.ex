@@ -137,7 +137,7 @@ defmodule LiveSlides.Presentations.PresentationServer do
 
   @impl true
   def handle_info(:timeout, state) do
-    Presentations.broadcast!(state.id, :finished)
+    Presentations.broadcast!(state.id, {:finished, state})
     {:stop, {:shutdown, :timeout}, state}
   end
 

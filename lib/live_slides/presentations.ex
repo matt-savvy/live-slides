@@ -194,8 +194,9 @@ defmodule LiveSlides.Presentations do
   """
   def finish(id) do
     with {:ok, pid} <- PresentationServer.whereis(id),
+         state <- PresentationServer.get_state(id),
          :ok <- DynamicSupervisor.terminate_child(supervisor(), pid) do
-      broadcast!(id, :finished)
+      broadcast!(id, {:finished, state})
     end
   end
 

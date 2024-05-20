@@ -90,7 +90,7 @@ defmodule LiveSlides.Presentations.PresentationServerTest do
 
     refute Process.alive?(pid)
 
-    assert_received :finished
+    assert_receive {:finished, %PresentationState{}}
     refute PresentationServer.exists?(id)
 
     on_exit(fn ->
