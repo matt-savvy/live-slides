@@ -18,6 +18,8 @@ defmodule LiveSlides.Presentations.Deck do
     |> cast(attrs, [:title, :user_id])
     |> validate_required([:title, :user_id])
     |> cast_embed(:slides,
+      required: true,
+      required_message: "Must have at least one slide",
       sort_param: :slide_order,
       drop_param: :slide_delete
     )

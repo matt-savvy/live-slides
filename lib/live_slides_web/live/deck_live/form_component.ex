@@ -20,6 +20,13 @@ defmodule LiveSlidesWeb.DeckLive.FormComponent do
         phx-submit="save"
       >
         <.input field={@form[:title]} type="text" label="Title" />
+
+        <div>
+          <.error :for={msg <- slide_errors(@form)}>
+            <%= msg %>
+          </.error>
+        </div>
+
         <.inputs_for :let={f_nested} field={@form[:slides]}>
           <div>
             <label class="block cursor-pointer">
@@ -111,4 +118,8 @@ defmodule LiveSlidesWeb.DeckLive.FormComponent do
   end
 
   defp notify_parent(msg), do: send(self(), {__MODULE__, msg})
+
+  defp slide_errors(form) do
+    Enum.map(form[:slides].errors, &translate_error(&1))
+  end
 end

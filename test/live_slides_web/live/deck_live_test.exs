@@ -42,7 +42,11 @@ defmodule LiveSlidesWeb.DeckLiveTest do
 
       assert index_live
              |> form("#deck-form", deck: @create_attrs)
-             |> render_submit()
+             |> render_submit() =~ "Must have at least one slide"
+
+      assert index_live
+             |> form("#deck-form", deck: @create_attrs)
+             |> render_submit(%{deck: %{slides: [%{"body" => "ipsum"}]}})
 
       assert_patch(index_live, ~p"/decks")
 
