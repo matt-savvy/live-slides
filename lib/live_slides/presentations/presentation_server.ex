@@ -43,6 +43,15 @@ defmodule LiveSlides.Presentations.PresentationServer do
   end
 
   @doc """
+  Returns the state.
+  """
+  def get_state(id) do
+    id
+    |> name()
+    |> :sys.get_state()
+  end
+
+  @doc """
   Returns the user_id.
   """
   def user_id(id) do

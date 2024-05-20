@@ -4,7 +4,7 @@ defmodule LiveSlides.Presentations.PresentationServerTest do
   import LiveSlides.PresentationsFixtures
 
   alias LiveSlides.Presentations
-  alias LiveSlides.Presentations.PresentationServer
+  alias LiveSlides.Presentations.{PresentationServer, PresentationState}
 
   test "integration test" do
     deck = deck_fixture()
@@ -19,6 +19,8 @@ defmodule LiveSlides.Presentations.PresentationServerTest do
 
     pid = start_supervised!({PresentationServer, {id, deck}}, id: id)
     assert PresentationServer.exists?(id)
+
+    assert PresentationState.new(id, deck) == PresentationServer.get_state(id)
 
     %{id: presentation_id} = presentation = presentation_fixture()
 
@@ -51,6 +53,15 @@ defmodule LiveSlides.Presentations.PresentationServerTest do
     PresentationServer.next_slide(id)
     assert third_slide == PresentationServer.get_slide(id)
     refute_receive {:slide_changed, ^third_slide}
+
+    %{slides: [slide_1, slide_2, slide_3], title: title} = deck
+
+    assert %PresentationState{
+             id: ^id,
+             title: ^title,
+             slides: [^slide_3],
+             prev_slides: [^slide_2, ^slide_1]
+           } = PresentationServer.get_state(id)
 
     PresentationServer.prev_slide(id)
     assert second_slide == PresentationServer.get_slide(id)
