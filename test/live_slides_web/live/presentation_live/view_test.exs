@@ -13,10 +13,6 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
 
   setup :start_test_supervisor
 
-  setup do
-    %{anon_conn: Phoenix.ConnTest.build_conn()}
-  end
-
   defp create_and_present(%{user: user}) do
     deck = deck_fixture(%{user: user})
     {:ok, id} = Presentations.present(deck)
@@ -40,7 +36,9 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
       assert html =~ first_slide.body
     end
 
-    test ":live gets redirected if not live", %{anon_conn: conn} do
+    test ":live gets redirected if not live" do
+      conn = Phoenix.ConnTest.build_conn()
+
       %{id: id} = presentation_fixture()
 
       redirect_path = ~p"/presentations/view/#{id}"
@@ -76,9 +74,10 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
       end
     end
 
-    test ":present raises NotFound when wrong user", %{anon_conn: conn, id: id} do
-      user = user_fixture()
-      conn = log_in_user(conn, user)
+    test ":present raises NotFound when wrong user", %{id: id} do
+      conn =
+        Phoenix.ConnTest.build_conn()
+        |> log_in_user(user_fixture())
 
       assert_raise LiveSlidesWeb.PresentationLive.NotFound, fn ->
         live(conn, ~p"/presentations/present/#{id}")
