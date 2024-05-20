@@ -19,7 +19,7 @@ defmodule LiveSlidesWeb.DeckLive.FormComponent do
         phx-change="validate"
         phx-submit="save"
       >
-        <.input field={@form[:title]} type="text" label="Title" />
+        <.input phx-debounce="2000" field={@form[:title]} type="text" label="Title" />
 
         <div>
           <.error :for={msg <- slide_errors(@form)}>
