@@ -176,6 +176,12 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
       refute live_view |> has_element?(@finish_button_selector)
     end
 
+    test ":view not shown copy url", %{conn: conn, id: id} do
+      {:ok, live_view, _html} = live(conn, ~p"/presentations/view/#{id}")
+
+      refute live_view |> has_element?(@copy_clipboard_selector)
+    end
+
     test "handles :finished", %{conn: conn, id: id} do
       {:ok, live_view, _html} = live(conn, ~p"/presentations/live/#{id}")
 

@@ -28,7 +28,12 @@
     Finish Presentation
   </.button>
 
-  <.button data-id="copy-link" phx-click="copy-link" title="Click to copy public link">
+  <.button
+    :if={@live_action == :present}
+    data-id="copy-link"
+    phx-click="copy-link"
+    title="Click to copy public link"
+  >
     <.icon name="hero-clipboard-solid" /> Copy Public Link
   </.button>
 </div>
