@@ -52,3 +52,10 @@ true
 iex(b@127.0.0.1)2> Node.list
 [:"a@127.0.0.1"]
 ```
+
+## Production
+
+### `LiveSlides.Mailer`
+
+For current (demo) use, the `Mailer` module is disabled.
+See config/runtime.exs
