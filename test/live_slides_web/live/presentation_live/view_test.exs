@@ -37,7 +37,7 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
     end
 
     test ":live gets redirected if not live" do
-      conn = Phoenix.ConnTest.build_conn()
+      conn = build_conn()
 
       %{id: id} = presentation_fixture()
 
@@ -76,7 +76,7 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
 
     test ":present raises NotFound when wrong user", %{id: id} do
       conn =
-        Phoenix.ConnTest.build_conn()
+        build_conn()
         |> log_in_user(user_fixture())
 
       assert_raise LiveSlidesWeb.PresentationLive.NotFound, fn ->
