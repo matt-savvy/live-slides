@@ -36,6 +36,10 @@
   >
     <.icon name="hero-clipboard-solid" /> Copy Public Link
   </.button>
+
+  <div :if={@live_action == :present} data-id="presence_count">
+    Audience: <%= @presence_count %>
+  </div>
 </div>
 
 <div class="my-4">

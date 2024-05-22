@@ -21,10 +21,17 @@ defmodule LiveSlidesWeb.PresentationLive.View do
     with true <- PresentationServer.exists?(id),
          ^user_id <- PresentationServer.user_id(id) do
       title = PresentationServer.title(id)
+
       :ok = Presentations.subscribe(id)
 
       %{body: body} = PresentationServer.get_slide(id)
-      socket |> assign(:page_title, title) |> assign(:id, id) |> assign(:body, body)
+      presence_count = Presentations.tracked_count(id)
+
+      socket
+      |> assign(:page_title, title)
+      |> assign(:id, id)
+      |> assign(:body, body)
+      |> assign(:presence_count, presence_count)
     else
       _ ->
         raise LiveSlidesWeb.PresentationLive.NotFound
@@ -39,8 +46,17 @@ defmodule LiveSlidesWeb.PresentationLive.View do
       title = PresentationServer.title(id)
       :ok = Presentations.subscribe(id)
 
+      if connected?(socket) do
+        {:ok, _ref} =
+          Presentations.track(id, socket.id)
+      end
+
       %{body: body} = PresentationServer.get_slide(id)
-      socket |> assign(:page_title, title) |> assign(:id, id) |> assign(:body, body)
+
+      socket
+      |> assign(:page_title, title)
+      |> assign(:id, id)
+      |> assign(:body, body)
     end
   end
 
@@ -109,5 +125,23 @@ defmodule LiveSlidesWeb.PresentationLive.View do
       |> assign(:live_action, :view)
       |> assign(:state, state)
     }
+  end
+
+  @impl true
+  def handle_info(
+        %{
+          event: "presence_diff",
+          payload: %{leaves: leaves, joins: joins}
+        },
+        socket
+      ) do
+    case socket.assigns do
+      %{presence_count: presence_count} ->
+        presence_count = presence_count + Enum.count(joins) - Enum.count(leaves)
+        {:noreply, socket |> assign(:presence_count, presence_count)}
+
+      _ ->
+        {:noreply, socket}
+    end
   end
 end

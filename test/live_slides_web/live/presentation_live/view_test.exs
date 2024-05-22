@@ -25,6 +25,7 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
     @prev_button_selector ~s{[data-id="change-slide-prev"]}
     @finish_button_selector ~s{[data-id="finish-presentation"]}
     @copy_clipboard_selector ~s{[data-id="copy-link"]}
+    @presence_count_selector ~s{[data-id="presence_count"]}
 
     setup [:register_and_log_in_user, :create_and_present]
 
@@ -197,6 +198,24 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
       {:ok, live_view, _html} = live(conn, ~p"/presentations/present/#{id}")
 
       assert live_view |> element(@copy_clipboard_selector) |> render_click()
+    end
+
+    test ":live connections update presence_count", %{conn: conn, id: id} do
+      {:ok, live_view, _html} = live(conn, ~p"/presentations/present/#{id}")
+      assert live_view |> element(@presence_count_selector) |> render() =~ "Audience: 0"
+
+      :ok = Presentations.subscribe(id)
+      {:ok, live_view_1, _html} = live(build_conn(), ~p"/presentations/live/#{id}")
+      assert_receive %{event: "presence_diff"}
+      {:ok, live_view_2, _html} = live(build_conn(), ~p"/presentations/live/#{id}")
+      assert_receive %{event: "presence_diff"}
+
+      assert live_view |> element(@presence_count_selector) |> render() =~ "Audience: 2"
+
+      for pid <- [live_view_1.pid, live_view_2.pid] do
+        GenServer.stop(pid)
+        assert_receive %{event: "presence_diff"}
+      end
     end
   end
 end
