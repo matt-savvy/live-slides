@@ -5,6 +5,7 @@ defmodule LiveSlides.Presentations do
 
   import Ecto.Query, warn: false
   alias LiveSlides.Repo
+  alias LiveSlidesWeb.Presence
 
   alias LiveSlides.Presentations.{Deck, Presentation, PresentationServer, PresentationSupervisor}
 
@@ -216,6 +217,23 @@ defmodule LiveSlides.Presentations do
   """
   def broadcast!(id, msg) do
     Phoenix.PubSub.broadcast(LiveSlides.PubSub, topic(id), msg)
+  end
+
+  @doc """
+  Tracks the process, using a topic for the id.
+  """
+  def track(id, self_id) do
+    Presence.track(self(), topic(id), self_id, %{})
+  end
+
+  @doc """
+  Return number of tracked ids.
+  """
+  def tracked_count(id) do
+    id
+    |> topic()
+    |> Presence.list()
+    |> Enum.count()
   end
 
   defp topic(id), do: "presentation-#{id}"

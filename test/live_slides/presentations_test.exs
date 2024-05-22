@@ -188,5 +188,45 @@ defmodule LiveSlides.PresentationsTest do
       Presentations.broadcast!(id, ref)
       assert_receive ^ref
     end
+
+    test "presence track/list" do
+      id = Ecto.UUID.generate()
+
+      track = fn ->
+        test_pid = self()
+        msg_ref = make_ref()
+
+        pid =
+          spawn(fn ->
+            {:ok, _ref} = Presentations.track(id, Ecto.UUID.generate())
+            send(test_pid, msg_ref)
+            Process.sleep(:infinity)
+          end)
+
+        # block test process until spawned process has been tracked
+        receive do
+          ^msg_ref -> :ok
+        end
+
+        pid
+      end
+
+      assert 0 == Presentations.tracked_count(id)
+
+      pid_1 = track.()
+      _pid_2 = track.()
+      _pid_3 = track.()
+
+      assert 3 == Presentations.tracked_count(id)
+
+      ref = Process.monitor(pid_1)
+      true = Process.exit(pid_1, :kill)
+
+      receive do
+        {:DOWN, ^ref, :process, ^pid_1, :killed} -> :ok
+      end
+
+      assert 2 == Presentations.tracked_count(id)
+    end
   end
 end
