@@ -139,7 +139,8 @@ defmodule LiveSlides.Presentations.PresentationServer do
       {:noreply, next_state, timeout()}
     else
       slide = PresentationState.get_slide(next_state)
-      Presentations.broadcast!(next_state.id, {:slide_changed, slide})
+      progress = PresentationState.progress(next_state)
+      Presentations.broadcast!(next_state.id, {:slide_changed, slide, progress})
 
       {:noreply, next_state, timeout()}
     end

@@ -111,7 +111,7 @@ defmodule LiveSlidesWeb.PresentationLive.View do
   end
 
   @impl true
-  def handle_info({:slide_changed, slide}, socket) do
+  def handle_info({:slide_changed, slide, _progress}, socket) do
     %{body: body} = slide
     {:noreply, socket |> assign(:body, body)}
   end

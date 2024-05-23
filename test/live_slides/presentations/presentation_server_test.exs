@@ -41,13 +41,13 @@ defmodule LiveSlides.Presentations.PresentationServerTest do
     PresentationServer.next_slide(id)
     assert second_slide == PresentationServer.get_slide(id)
 
-    assert_receive {:slide_changed, ^second_slide}
+    assert_receive {:slide_changed, ^second_slide, {2, 3}}
 
     PresentationServer.next_slide(id)
     assert third_slide == PresentationServer.get_slide(id)
     # assert here to make sure this message is no longer in the
     # mailbox before we test the no-op case
-    assert_receive {:slide_changed, ^third_slide}
+    assert_receive {:slide_changed, ^third_slide, {3, 3}}
 
     # no op
     PresentationServer.next_slide(id)
@@ -72,7 +72,7 @@ defmodule LiveSlides.Presentations.PresentationServerTest do
     assert first_slide == PresentationServer.get_slide(id)
     # assert here to make sure this message is no longer in the
     # mailbox before we test the no-op case
-    assert_receive {:slide_changed, ^first_slide}
+    assert_receive {:slide_changed, ^first_slide, {1, 3}}
 
     # no op
     PresentationServer.prev_slide(id)
