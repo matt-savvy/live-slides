@@ -64,4 +64,13 @@ defmodule LiveSlides.Presentations.PresentationState do
       [] -> state
     end
   end
+
+  @doc """
+  Returns tuple to indicate slide number x out of y.
+  """
+  def progress(%__MODULE__{slides: slides, prev_slides: prev_slides}) do
+    prev_count = Enum.count(prev_slides)
+    total_count = prev_count + Enum.count(slides)
+    {prev_count + 1, total_count}
+  end
 end

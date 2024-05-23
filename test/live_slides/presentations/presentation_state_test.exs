@@ -102,4 +102,37 @@ defmodule LiveSlides.Presentations.PresentationStateTest do
       assert ^state = PresentationState.prev_slide(state)
     end
   end
+
+  describe "progress/1" do
+    test "returns progress tuple" do
+      deck =
+        deck_fixture(%{
+          slides: [
+            %{body: "first"},
+            %{body: "second"},
+            %{body: "third"},
+            %{body: "fourth"},
+            %{body: "fifth"}
+          ]
+        })
+
+      [first, second | rest] = deck.slides
+
+      state = %PresentationState{
+        slides: rest,
+        prev_slides: [second, first]
+      }
+
+      assert {3, 5} = PresentationState.progress(state)
+
+      [first, second, third, fourth, fifth] = deck.slides
+
+      state = %PresentationState{
+        slides: [fifth],
+        prev_slides: [fourth, third, second, first]
+      }
+
+      assert {5, 5} = PresentationState.progress(state)
+    end
+  end
 end
