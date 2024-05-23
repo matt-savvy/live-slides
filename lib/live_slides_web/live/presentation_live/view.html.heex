@@ -40,6 +40,9 @@
   <div :if={@live_action == :present} data-id="presence_count">
     Audience: <%= @presence_count %>
   </div>
+  <div>
+    <%= elem(@progress, 0) %> of <%= elem(@progress, 1) %>
+  </div>
 </div>
 
 <div class="my-4">

@@ -217,5 +217,17 @@ defmodule LiveSlidesWeb.PresentationLiveTest do
         assert_receive %{event: "presence_diff"}
       end
     end
+
+    test ":present shows progress", %{conn: conn, id: id} do
+      {:ok, _live_view, html} = live(conn, ~p"/presentations/present/#{id}")
+
+      assert html =~ "1 of 3"
+    end
+
+    test ":view shows progress", %{conn: conn, id: id} do
+      {:ok, _live_view, html} = live(conn, ~p"/presentations/view/#{id}")
+
+      assert html =~ "1 of 3"
+    end
   end
 end

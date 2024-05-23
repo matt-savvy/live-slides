@@ -21,6 +21,7 @@ defmodule LiveSlidesWeb.PresentationLive.View do
     with true <- PresentationServer.exists?(id),
          ^user_id <- PresentationServer.user_id(id) do
       title = PresentationServer.title(id)
+      progress = PresentationServer.progress(id)
 
       :ok = Presentations.subscribe(id)
 
@@ -32,6 +33,7 @@ defmodule LiveSlidesWeb.PresentationLive.View do
       |> assign(:id, id)
       |> assign(:body, body)
       |> assign(:presence_count, presence_count)
+      |> assign(:progress, progress)
     else
       _ ->
         raise LiveSlidesWeb.PresentationLive.NotFound
@@ -44,6 +46,7 @@ defmodule LiveSlidesWeb.PresentationLive.View do
       |> push_patch(to: ~p"/presentations/view/#{id}", replace: true)
     else
       title = PresentationServer.title(id)
+      progress = PresentationServer.progress(id)
       :ok = Presentations.subscribe(id)
 
       if connected?(socket) do
@@ -57,6 +60,7 @@ defmodule LiveSlidesWeb.PresentationLive.View do
       |> assign(:page_title, title)
       |> assign(:id, id)
       |> assign(:body, body)
+      |> assign(:progress, progress)
     end
   end
 
@@ -67,6 +71,7 @@ defmodule LiveSlidesWeb.PresentationLive.View do
       |> PresentationState.new()
 
     title = PresentationState.title(state)
+    progress = PresentationState.progress(state)
     %{body: body} = PresentationState.get_slide(state)
 
     socket
@@ -74,6 +79,7 @@ defmodule LiveSlidesWeb.PresentationLive.View do
     |> assign(:id, id)
     |> assign(:body, body)
     |> assign(:state, state)
+    |> assign(:progress, progress)
   end
 
   @impl true
@@ -92,7 +98,13 @@ defmodule LiveSlidesWeb.PresentationLive.View do
       :view ->
         next_state = apply(PresentationState, action, [socket.assigns.state])
         %{body: body} = PresentationState.get_slide(next_state)
-        {:noreply, socket |> assign(:state, next_state) |> assign(:body, body)}
+        progress = PresentationState.progress(next_state)
+
+        {:noreply,
+         socket
+         |> assign(:state, next_state)
+         |> assign(:body, body)
+         |> assign(:progress, progress)}
     end
   end
 
@@ -111,9 +123,9 @@ defmodule LiveSlidesWeb.PresentationLive.View do
   end
 
   @impl true
-  def handle_info({:slide_changed, slide, _progress}, socket) do
+  def handle_info({:slide_changed, slide, progress}, socket) do
     %{body: body} = slide
-    {:noreply, socket |> assign(:body, body)}
+    {:noreply, socket |> assign(:body, body) |> assign(:progress, progress)}
   end
 
   @impl true
