@@ -106,6 +106,15 @@ defmodule LiveSlides.Presentations.PresentationServer do
     end
   end
 
+  @doc """
+  Returns the current progress tuple.
+  """
+  def progress(id) do
+    id
+    |> name()
+    |> GenServer.call(:progress)
+  end
+
   @impl true
   def init([id, %Deck{} = deck]) do
     {:ok, PresentationState.new(id, deck), timeout()}
@@ -116,7 +125,8 @@ defmodule LiveSlides.Presentations.PresentationServer do
   end
 
   @impl true
-  def handle_call(action, _from, state) when action in [:title, :user_id, :get_slide] do
+  def handle_call(action, _from, state)
+      when action in [:title, :user_id, :get_slide, :progress] do
     {:reply, apply(PresentationState, action, [state]), state, timeout()}
   end
 

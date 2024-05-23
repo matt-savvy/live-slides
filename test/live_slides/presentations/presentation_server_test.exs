@@ -63,6 +63,8 @@ defmodule LiveSlides.Presentations.PresentationServerTest do
              prev_slides: [^slide_2, ^slide_1]
            } = PresentationServer.get_state(id)
 
+    assert {3, 3} = PresentationServer.progress(id)
+
     PresentationServer.prev_slide(id)
     assert second_slide == PresentationServer.get_slide(id)
 
