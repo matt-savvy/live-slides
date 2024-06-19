@@ -690,6 +690,6 @@ defmodule LiveSlidesWeb.CoreComponents do
   defp md_to_html(nil), do: nil
 
   defp md_to_html(body) do
-    MDEx.to_html(body)
+    MDEx.to_html(body, extension: [table: true])
   end
 end
